@@ -20,7 +20,7 @@ public:
 	~PlayLayer();
 	virtual bool init(); //CCLayer的儿子们都有这玩意儿。别忘了virtual关键字
 	CREATE_FUNC(PlayLayer); //千万别忘了这个风情万种的宏
-	void setLevel(int a, int b) { m_levelA = a; m_levelB = b; }
+	void setLevel(int a, int b);
 
 	//重写触屏相关函数----
 	virtual void onEnter();
@@ -35,6 +35,7 @@ public:
 	
 	void setStopVisible(bool b);
 	void initBoard();
+	void thinkAndMove(); //线程调用
 
 public:
 	bool getTouchChessPos(const CCPoint& point, int& chessPos);

@@ -77,8 +77,16 @@ void SceneManager::goMenu(int transType)
 
 void SceneManager::goPlay()
 {
-	CCLayer* layer = PlayLayer::create();
+	PlayLayer* layer = PlayLayer::create();
 	//生成一个PlayLayer的节点   
+	SceneManager::go(layer);  
+	//看看go函数的定义...这个layer直接被他扔到Scene里了  
+}  
+
+void SceneManager::goPlay2()
+{
+	PlayLayer* layer = PlayLayer::create();
+	layer->setLevel(0,5);
 	SceneManager::go(layer);  
 	//看看go函数的定义...这个layer直接被他扔到Scene里了  
 }  

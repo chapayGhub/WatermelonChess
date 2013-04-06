@@ -15,6 +15,7 @@ public:
 
 public:
 	void menuCallbackPlay(CCObject* sender);
+	void menuCallbackPlay2(CCObject* sender);
 	void menuCallbackRecording(CCObject* sender);
 	void music(CCObject *pSender);
 };

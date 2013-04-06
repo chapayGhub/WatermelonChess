@@ -4,6 +4,9 @@
 #include "MySound.h"
 #include "Basic.h"
 #include "GameOverLayer.h"
+#include <pthread.h>
+#pragma comment(lib, "pthreadVC2_x64.lib")  //必须加上这句
+
 #include "cocos-ext.h"
 USING_NS_CC_EXT;
 
@@ -21,7 +24,7 @@ bool PlayLayer::init()
 	m_selected = false;
 	m_movable = true;
 	m_levelA = 0;
-	m_levelB = 6;
+	m_levelB = 0;
 
 	//board
 	CCSprite* chessboard = CCSprite::create(PIC_CHESSBOARD1);
@@ -34,14 +37,14 @@ bool PlayLayer::init()
 	m_chessCircle->setVisible(false);
 	addChild(m_chessCircle,2);
 	//turns label...
-	m_labelTurnA = CCLabelTTF::create("Blue turns", "Marker Felt", 80);
-	m_labelTurnA->setAnchorPoint(ccp(0,0.5));
-	m_labelTurnA->setPosition(ccp(100,100));
+	m_labelTurnA = CCLabelTTF::create("Blue turns", "Marker Felt", 50);
+	m_labelTurnA->setAnchorPoint(ccp(0.5,0.5));
+	m_labelTurnA->setPosition(ccp(s.width*0.5,100));
 	m_labelTurnA->setVisible(false);
 	addChild(m_labelTurnA);
-	m_labelTurnB = CCLabelTTF::create("Purple turns", "Marker Felt", 80);
-	m_labelTurnB->setAnchorPoint(ccp(0,0.5));
-	m_labelTurnB->setPosition(ccp(100,s.height-100));
+	m_labelTurnB = CCLabelTTF::create("Purple turns", "Marker Felt", 50);
+	m_labelTurnB->setAnchorPoint(ccp(0.5,0.5));
+	m_labelTurnB->setPosition(ccp(s.width*0.5,s.height-100));
 	m_labelTurnB->setVisible(false);
 	addChild(m_labelTurnB);
 
@@ -60,6 +63,16 @@ bool PlayLayer::init()
 	m_chess.nextTurn();
 	nextTurn();
 	return true;
+}
+
+void PlayLayer::setLevel(int a, int b)
+{
+	m_levelA = a;
+	m_levelB = b;
+	if(a>0)
+		m_labelTurnA->setString("Blue Thinking...");
+	if(b>0)
+		m_labelTurnB->setString("Purple Thinking...");
 }
 
 void PlayLayer::back(cocos2d::CCObject *pSender)  
@@ -170,11 +183,24 @@ void PlayLayer::checkFinish()
 	setStopVisible(false);
 }
 
-void PlayLayer::nextTurn()
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+void* ThreadFunction(void* arg)
 {
-	m_chess.nextTurn();
-	m_labelTurnA->setVisible(m_chess.isTurnA());
-	m_labelTurnB->setVisible(!m_chess.isTurnA());
+    pthread_mutex_lock(&mutex);
+    PlayLayer* playLayer = (PlayLayer*)arg;
+	playLayer->thinkAndMove();
+    pthread_mutex_unlock(&mutex);
+    return NULL;
+}
+
+void CreateThinkThread(PlayLayer* playLayer)
+{
+    pthread_t thread;
+    pthread_create(&thread, NULL, &ThreadFunction, playLayer);
+}
+
+void PlayLayer::thinkAndMove()
+{	
 	if(m_chess.isTurnA() && m_levelA > 0)
 	{
 		//CCLog("auto A...");
@@ -194,7 +220,19 @@ void PlayLayer::nextTurn()
 			moveChessman();
 		}
 	}
-	m_movable = true;
+}
+
+void PlayLayer::nextTurn()
+{
+	m_chess.nextTurn();
+	m_labelTurnA->setVisible(m_chess.isTurnA());
+	m_labelTurnB->setVisible(!m_chess.isTurnA());
+	
+	if((m_chess.isTurnA() && m_levelA > 0) ||
+		(!m_chess.isTurnA() && m_levelB > 0) )
+		CreateThinkThread(this);
+	else
+		m_movable = true;
 }
 
 void PlayLayer::selectChessman(int chessPos)
