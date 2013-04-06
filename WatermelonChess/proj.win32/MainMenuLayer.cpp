@@ -19,7 +19,7 @@ bool MainMenuLayer::init()
 	CCScale9Sprite* bg = CCScale9Sprite::create(PIC_ROUND);
 	bg->setPreferredSize(CCSizeMake(500, 600));
 	bg->setAnchorPoint(ccp(0.5,0.5));
-	bg->setColor(ccc3(50,205,50));
+	bg->setColor(ccc3(50,30,50));
 	bg->setPosition(ccp(s.width*0.5, s.height*0.5));
 	addChild(bg);
 	
