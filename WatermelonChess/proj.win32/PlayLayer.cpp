@@ -5,7 +5,7 @@
 #include "Basic.h"
 #include "GameOverLayer.h"
 #include <pthread.h>
-#pragma comment(lib, "pthreadVC2_x64.lib")  //必须加上这句
+//#pragma comment(lib, "pthreadVC2.lib")  //必须加上这句
 
 #include "cocos-ext.h"
 USING_NS_CC_EXT;
@@ -42,7 +42,7 @@ bool PlayLayer::init()
 	m_labelTurnA->setPosition(ccp(s.width*0.5,100));
 	m_labelTurnA->setVisible(false);
 	addChild(m_labelTurnA);
-	m_labelTurnB = CCLabelTTF::create("Purple turns", "Marker Felt", 50);
+	m_labelTurnB = CCLabelTTF::create("Pink turns", "Marker Felt", 50);
 	m_labelTurnB->setAnchorPoint(ccp(0.5,0.5));
 	m_labelTurnB->setPosition(ccp(s.width*0.5,s.height-100));
 	m_labelTurnB->setVisible(false);
@@ -72,7 +72,7 @@ void PlayLayer::setLevel(int a, int b)
 	if(a>0)
 		m_labelTurnA->setString("Blue Thinking...");
 	if(b>0)
-		m_labelTurnB->setString("Purple Thinking...");
+		m_labelTurnB->setString("Pink Thinking...");
 }
 
 void PlayLayer::back(cocos2d::CCObject *pSender)  
@@ -121,6 +121,7 @@ void PlayLayer::realMove()
 {
 	m_chess.move(m_touchChessPos, m_moveToChessPos);
 	m_movable = false;
+
 	CCSprite* chessman = (CCSprite*)getChildByTag(100+m_touchChessPos);
 	chessman->setTag(CHESS_BASE+m_moveToChessPos);
 	CCPoint pos = getChessPoint(m_moveToChessPos);
@@ -195,8 +196,10 @@ void* ThreadFunction(void* arg)
 
 void CreateThinkThread(PlayLayer* playLayer)
 {
+	//void *status = NULL;
     pthread_t thread;
     pthread_create(&thread, NULL, &ThreadFunction, playLayer);
+	//pthread_join(thread, &status);
 }
 
 void PlayLayer::thinkAndMove()
@@ -227,10 +230,12 @@ void PlayLayer::nextTurn()
 	m_chess.nextTurn();
 	m_labelTurnA->setVisible(m_chess.isTurnA());
 	m_labelTurnB->setVisible(!m_chess.isTurnA());
-	
+
 	if((m_chess.isTurnA() && m_levelA > 0) ||
 		(!m_chess.isTurnA() && m_levelB > 0) )
+	{
 		CreateThinkThread(this);
+	}
 	else
 		m_movable = true;
 }
