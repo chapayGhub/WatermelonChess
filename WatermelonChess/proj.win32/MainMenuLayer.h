@@ -13,6 +13,8 @@ public:
 	virtual bool init();
 	CREATE_FUNC(MainMenuLayer);
 
+	void loadImage();
+
 public:
 	void menuCallbackPlay(CCObject* sender);
 	void menuCallbackPlay2(CCObject* sender);

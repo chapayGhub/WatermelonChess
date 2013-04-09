@@ -19,7 +19,7 @@ bool MainMenuLayer::init()
 	CCScale9Sprite* bg = CCScale9Sprite::create(PIC_ROUND);
 	bg->setPreferredSize(CCSizeMake(600, 600));
 	bg->setAnchorPoint(ccp(0.5,0.5));
-	bg->setColor(ccc3(50,30,50));
+	//bg->setColor(ccc3(50,30,50));
 	bg->setPosition(ccp(s.width*0.5, s.height*0.5));
 	addChild(bg);
 	
@@ -57,8 +57,17 @@ bool MainMenuLayer::init()
 	addChild(menu);
     menu->setPosition(ccp(s.width/2, s.height/2));  
 	
+	loadImage();
 	return true;
 
+}
+
+void MainMenuLayer::loadImage()
+{
+	for(int i = 0; i < s_pics_num; i++)
+	{
+		CCTextureCache::sharedTextureCache()->addImage(s_pics[i].c_str());
+	}
 }
 
 void MainMenuLayer::menuCallbackPlay(CCObject* sender) 

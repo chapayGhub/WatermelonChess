@@ -313,8 +313,8 @@ bool PlayLayer::getTouchChessPos(const CCPoint& point, int& chessPos)
 	for(int i = 0; i < 21; i++)
 	{
 		CCPoint chessPoint = getChessPoint(i);
-		if(abs(point.x - chessPoint.x)<20 &&
-			abs(point.y - chessPoint.y)<20)
+		if(point.x - chessPoint.x > -40 && point.x - chessPoint.x < 40 &&
+			point.y - chessPoint.y > -40 && point.y - chessPoint.y < 40)
 		{
 			chessPos = i;
 			return true;
