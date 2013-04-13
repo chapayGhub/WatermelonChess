@@ -40,17 +40,19 @@ bool MainMenuLayer::init()
 	this->addChild(musicMenu);
 
 	// 创建一个CCMenuItemFont    
-    CCMenuItemFont *item1 = CCMenuItemFont::create("Play", this, menu_selector(MainMenuLayer::menuCallbackPlay) );  
+    CCMenuItemFont *item1 = CCMenuItemFont::create("2 Players", this, menu_selector(MainMenuLayer::menuCallbackPlay) );  
 	item1->setFontSizeObj(100);
     //item2->setFontName("Marker Felt");  
     CCMenuItemFont *item2 = CCMenuItemFont::create("Vs Computer", this, menu_selector(MainMenuLayer::menuCallbackPlay2) );  
 	item2->setFontSizeObj(100);
-    //CCMenuItemFont *item3 = CCMenuItemFont::create("Recording", this, menu_selector(MainMenuLayer::menuCallbackRecording) );  
-    //item3->setFontSizeObj(100);  
+    CCMenuItemFont *item3 = CCMenuItemFont::create("Play online", this, menu_selector(MainMenuLayer::menuCallbackPlayNet) );  
+    item3->setFontSizeObj(100);
+    CCMenuItemFont *item4 = CCMenuItemFont::create("Recording", this, menu_selector(MainMenuLayer::menuCallbackRecording) );  
+    item4->setFontSizeObj(100);
 
 
 	//创建CCMenu菜单，其他可认为是菜单项   
-    CCMenu* menu = CCMenu::create( item1, item2, NULL);  
+    CCMenu* menu = CCMenu::create( item1, item2, item3, item4, NULL);  
     menu->alignItemsVertically();//可以理解为设置成垂直排列   
     //menu->alignItemsHorizontally();//水平排列   
 
@@ -82,6 +84,13 @@ void MainMenuLayer::menuCallbackPlay2(CCObject* sender)
 	MySound::playSound(SOUND_SELECT_PROP);
 	
 	SceneManager::goPlay2();
+}
+
+void MainMenuLayer::menuCallbackPlayNet(CCObject* sender) 
+{
+	MySound::playSound(SOUND_SELECT_PROP);
+	
+	SceneManager::goPlayNet();
 }
 
 void MainMenuLayer::menuCallbackRecording(CCObject* sender) 

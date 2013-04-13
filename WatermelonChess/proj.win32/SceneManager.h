@@ -14,6 +14,7 @@ public:
     static void goMenu(int transType = 0);
 	static void goPlay();
 	static void goPlay2();
+	static void goPlayNet();
 	static void goRecording(int transType = 0);
 	static void goStop();
     static void go(CCLayer* layer, int transType = 0);

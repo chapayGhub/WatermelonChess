@@ -6,7 +6,7 @@
 #include <algorithm>
 using namespace std;
 
-struct Point
+struct Chess_Point
 {
 	double x;
 	double y;
@@ -27,7 +27,7 @@ struct Point
 		1		3
 			0	
 */
-const Point s_chessmenPosition[21] = {
+const Chess_Point s_chessmenPosition[21] = {
 	{320, 34},
 	{215, 54}, {320, 114}, {426.8, 54},
 	{55.3, 213}, {320, 192.2}, {586.3, 213.1},
