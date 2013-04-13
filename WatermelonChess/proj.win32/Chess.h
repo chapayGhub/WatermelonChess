@@ -56,6 +56,8 @@ public:
 	const set<int>& getChessmen_A() { return m_chessmen_A; }
 	const set<int>& getChessmen_B() { return m_chessmen_B; }
 	const vector<int>& getDeadChessmen() { return m_deadChessmen; }
+	void revive();
+	void revive(const vector<int>& deads, bool isDead_A);
 	ChessPointState getChessPosState(int chessPos) { return m_chessboard[chessPos]; }
 	bool isConnect(int pos1, int pos2);
 	bool isTurnA() { return m_turnA; }
@@ -71,6 +73,7 @@ private:
 private:
 	bool m_turnA;
 	vector<int> m_deadChessmen;
+	bool m_deadA;
 	ChessPointState m_chessboard[21];
 	set<int> m_chessmen_A;
 	set<int> m_chessmen_B;
@@ -98,7 +101,8 @@ private:
 	const int m_level;
 	int m_fromPos;
 	int m_toPos;
-	vector<Chess*> m_boards;
+	Chess* m_board;
+	//vector<Chess*> m_boards;
 };
 
 extern bool findIntInVector(vector<int>& chessmen, int chessman);

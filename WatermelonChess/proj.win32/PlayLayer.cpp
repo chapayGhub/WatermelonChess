@@ -88,7 +88,7 @@ PlayLayer::~PlayLayer()
 
 void PlayLayer::initBoard()
 {
-	/*
+#if 1
 	for(int i = 0; i < 21; i++)
 	{
 		char buf[3];
@@ -97,7 +97,8 @@ void PlayLayer::initBoard()
 		num->setPosition(getChessPoint(i));
 		num->setColor(ccc3(255,0,0));
 		addChild(num, 2);
-	}*/
+	}
+#endif
 
 	int initChessmemA[6] = {0,1,2,3,4,6};
 	int initChessmemB[6] = {14,16,17,18,19,20};
@@ -188,6 +189,7 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 void* ThreadFunction(void* arg)
 {
     pthread_mutex_lock(&mutex);
+	srand((unsigned)time(0));
     PlayLayer* playLayer = (PlayLayer*)arg;
 	playLayer->thinkAndMove();
     pthread_mutex_unlock(&mutex);

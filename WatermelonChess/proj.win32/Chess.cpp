@@ -185,6 +185,47 @@ void Chess::move(int pos1, int pos2)
 	m_chessboard[pos1] = CHESS_POINT_NONE;
 }
 
+void Chess::revive(const vector<int>& deads, bool isDead_A)
+{
+	if(isDead_A)
+	{
+		for(size_t i = 0; i < deads.size(); i++)
+		{
+			m_chessmen_A.insert(deads[i]);
+			m_chessboard[deads[i]] = CHESS_POINT_A;
+		}
+	}
+	else
+	{
+		for(size_t i = 0; i < deads.size(); i++)
+		{
+			m_chessmen_B.insert(deads[i]);
+			m_chessboard[deads[i]] = CHESS_POINT_B;
+		}
+	}
+}
+
+void Chess::revive()
+{
+	if(m_deadA)
+	{
+		for(size_t i = 0; i < m_deadChessmen.size(); i++)
+		{
+			m_chessmen_A.insert(m_deadChessmen[i]);
+			m_chessboard[m_deadChessmen[i]] = CHESS_POINT_A;
+		}
+	}
+	else
+	{
+		for(size_t i = 0; i < m_deadChessmen.size(); i++)
+		{
+			m_chessmen_B.insert(m_deadChessmen[i]);
+			m_chessboard[m_deadChessmen[i]] = CHESS_POINT_B;
+		}
+	}
+	m_deadChessmen.clear();
+}
+
 bool findIntInVector(vector<int>& chessmen, int chessman)
 {
 	vector<int>::iterator result = find(chessmen.begin(), chessmen.end(), chessman);
@@ -263,6 +304,7 @@ bool Chess::check()
 				m_chessmen_A.erase(iter);
 			}
 		}
+		m_deadA = !m_turnA;
 		return true;
 	}
 	return false;
@@ -379,17 +421,19 @@ clock_t t4;
 ChessAI::ChessAI(Chess* chess, int level)
 	:m_level(level), m_fromPos(-1), m_toPos(-1)
 {
-	Chess* board = new Chess(*chess);
-	m_boards.push_back(board);
+	m_board = new Chess(*chess);
+	//Chess* board = new Chess(*chess);
+	//m_boards.push_back(board);
 	int alpha = -10000;
 	int beta = 10000;
 	c = 0;
 	
+	/*
     for(int i = 0; i < m_level; i++)
 	{
 		Chess* board = new Chess();
 		m_boards.push_back(board);
-	}
+	}*/
 	
     //DWORD  dw = GetTickCount();//timeGetTime(); time(NULL);
 	t1 = 0;
@@ -411,10 +455,12 @@ ChessAI::ChessAI(Chess* chess, int level)
 
 ChessAI::~ChessAI()
 {
+	delete m_board;
+	/*
 	for(size_t i = 0; i < m_boards.size(); i++)
 	{
 		delete m_boards[i];
-	}
+	}*/
 }
 
 void ChessAI::getAImove(int& fromPos, int& toPos)
@@ -429,41 +475,53 @@ int ChessAI::alpha_beta(int depth, int& alpha, int& beta)
 	{
 		c++;
 		//m_boards[depth].nextTurn();
-		int value = m_boards[depth]->getBoardValue();
+		//int value = m_boards[depth]->getBoardValue();
+		m_board->nextTurn();
+		int value = m_board->getBoardValue();
+		m_board->nextTurn();
 		return value;
 	}
 	vector<pair<int,int> > allMovable;
 	allMovable.clear();
-	m_boards[depth]->getAllMovable(allMovable);
-	if(m_boards[depth]->isTurnA())
+	m_board->getAllMovable(allMovable);
+	//m_boards[depth]->getAllMovable(allMovable);
+	//if(m_boards[depth]->isTurnA())
+	if(m_board->isTurnA())
 	{
 		//CCLog("A depth:%d", depth);
 		for(size_t i = 0; i < allMovable.size(); i++)
 		{
 			clock_t c3 = clock();
-			*m_boards[depth+1] = *m_boards[depth];
+			//*m_boards[depth+1] = *m_boards[depth];
 			c3 = clock() - c3;
 			t3+=c3;
 			clock_t c4 = clock();
 			pair<int,int> move = allMovable[i];
-			m_boards[depth+1]->move(move.first, move.second);
-			//CCLog("A move:%d->%d", move.first,move.second);
-			m_boards[depth+1]->check();
+			//m_boards[depth+1]->move(move.first, move.second);
+			//m_boards[depth+1]->check();
+			m_board->move(move.first, move.second);
+			m_board->check();
+			vector<int> deads = m_board->getDeadChessmen();
 			c4 = clock() - c4;
 			t4+=c4;
-			if(depth == 0 && m_boards[depth+1]->checkFinish())
+			//if(depth == 0 && m_boards[depth+1]->checkFinish())
+			if(depth == 0 && m_board->checkFinish())
 			{
 				m_fromPos = move.first;
 				m_toPos = move.second;
 				return 3000;
 			}
-			m_boards[depth+1]->nextTurn();
+			//m_boards[depth+1]->nextTurn();
+			m_board->nextTurn();
 			int a = alpha;
 			int b = beta;
 			int value = alpha_beta(depth+1, alpha, beta);
 			alpha = a;
 			beta = b;
-			//CCLog("A value:%d", value);
+			m_board->move(move.second, move.first);
+			m_board->revive(deads, false);
+			m_board->nextTurn();
+			//CCLog("A move:%d->%d, value:%d", move.first,move.second, value);
 			if(value > alpha)
 			{
 				//CCLog("A biggerbiggerbigger alpha: %d", value);
@@ -475,8 +533,11 @@ int ChessAI::alpha_beta(int depth, int& alpha, int& beta)
 					m_toPos = move.second;
 				}
 			}
-			if(alpha >= beta)
+			if(alpha >= beta || value == 3000)
+			{
+				//CCLog("alpha>=beta, %d > %d", alpha, beta);
 				break;
+			}
 		}
 		//CCLog("A return alpha: %d", alpha);
 		return alpha;
@@ -487,29 +548,36 @@ int ChessAI::alpha_beta(int depth, int& alpha, int& beta)
 		for(size_t i = 0; i < allMovable.size(); i++)
 		{
 			clock_t c3 = clock();
-			*m_boards[depth+1] = *m_boards[depth];
+			//*m_boards[depth+1] = *m_boards[depth];
 			c3 = clock() - c3;
 			t3+=c3;
 			clock_t c4 = clock();
 			pair<int,int> move = allMovable[i];
-			m_boards[depth+1]->move(move.first, move.second);
-			//CCLog("B move:%d->%d", move.first,move.second);
-			m_boards[depth+1]->check();
+			//m_boards[depth+1]->move(move.first, move.second);
+			//m_boards[depth+1]->check();
+			m_board->move(move.first, move.second);
+			m_board->check();
+			vector<int> deads = m_board->getDeadChessmen();
 			c4 = clock() - c4;
 			t4+=c4;
-			if(depth == 0 && m_boards[depth+1]->checkFinish())
+			//if(depth == 0 && m_boards[depth+1]->checkFinish())
+			if(depth == 0 && m_board->checkFinish())
 			{
 				m_fromPos = move.first;
 				m_toPos = move.second;
 				return -3000;
 			}
-			m_boards[depth+1]->nextTurn();
+			//m_boards[depth+1]->nextTurn();
+			m_board->nextTurn();
 			int a = alpha;
 			int b = beta;
 			int value = alpha_beta(depth+1, alpha, beta);
 			alpha = a;
 			beta = b;
-			//CCLog("B value:%d", value);
+			m_board->move(move.second, move.first);
+			m_board->revive(deads, true);
+			m_board->nextTurn();
+			//CCLog("B move:%d->%d, value:%d", move.first,move.second, value);
 			if(value < beta)
 			{
 				//CCLog("B smallersmallersmaller beta: %d", value);
@@ -521,8 +589,11 @@ int ChessAI::alpha_beta(int depth, int& alpha, int& beta)
 					m_toPos = move.second;
 				}
 			}
-			if(alpha >= beta)
+			if(alpha >= beta || value == -3000)
+			{
+				//CCLog("alpha>=beta, %d > %d", alpha, beta);
 				break;
+			}
 		}
 		//CCLog("B return beta: %d", beta);
 		return beta;

@@ -45,12 +45,12 @@ bool MainMenuLayer::init()
     //item2->setFontName("Marker Felt");  
     CCMenuItemFont *item2 = CCMenuItemFont::create("Vs Computer", this, menu_selector(MainMenuLayer::menuCallbackPlay2) );  
 	item2->setFontSizeObj(100);
-    CCMenuItemFont *item3 = CCMenuItemFont::create("Recording", this, menu_selector(MainMenuLayer::menuCallbackRecording) );  
-    item3->setFontSizeObj(100);  
+    //CCMenuItemFont *item3 = CCMenuItemFont::create("Recording", this, menu_selector(MainMenuLayer::menuCallbackRecording) );  
+    //item3->setFontSizeObj(100);  
 
 
 	//创建CCMenu菜单，其他可认为是菜单项   
-    CCMenu* menu = CCMenu::create( item1, item2, item3, NULL);  
+    CCMenu* menu = CCMenu::create( item1, item2, NULL);  
     menu->alignItemsVertically();//可以理解为设置成垂直排列   
     //menu->alignItemsHorizontally();//水平排列   
 

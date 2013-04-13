@@ -86,7 +86,7 @@ void SceneManager::goPlay()
 void SceneManager::goPlay2()
 {
 	PlayLayer* layer = PlayLayer::create();
-	layer->setLevel(0,5);
+	layer->setLevel(0,6);
 	SceneManager::go(layer);  
 	//看看go函数的定义...这个layer直接被他扔到Scene里了  
 }  
