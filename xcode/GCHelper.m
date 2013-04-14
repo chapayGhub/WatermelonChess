@@ -15,6 +15,8 @@
 @synthesize match;
 @synthesize delegate;
 @synthesize playersDict;
+@synthesize pendingInvite;
+@synthesize pendingPlayersToInvite;
 
 #pragma mark Initialization
 
@@ -63,6 +65,14 @@ static UIViewController* currentModalViewController = nil;
         NSLog(@"id: %@", [GKLocalPlayer localPlayer].playerID);
         NSLog(@"Authentication changed: player authenticated.");
         userAuthenticated = TRUE;
+        [GKMatchmaker sharedMatchmaker].inviteHandler =^(GKInvite *acceptedInvite, NSArray *playersToInvite) {
+            
+            NSLog(@"Received invite");
+            self.pendingInvite = acceptedInvite;
+            self.pendingPlayersToInvite = playersToInvite;
+            [delegate inviteReceived];
+            
+        };
     }
     else if(![GKLocalPlayer localPlayer].isAuthenticated && userAuthenticated)
     {
@@ -80,7 +90,7 @@ static UIViewController* currentModalViewController = nil;
     
     NSLog(@"Authenticating local user...");
     if ([GKLocalPlayer localPlayer].authenticated == NO)
-    {
+    {/*
         // check if the device is running iOS 4.1 or later
         NSString *reqSysVer =@"6.0";
         NSString *currSysVer = [[UIDevice currentDevice] systemVersion];
@@ -88,7 +98,7 @@ static UIViewController* currentModalViewController = nil;
                                                options:NSNumericSearch] != NSOrderedAscending);
         if(newVersion)
             [[GKLocalPlayer localPlayer] authenticateHandler];
-        else
+        else*/
             [[GKLocalPlayer localPlayer] authenticateWithCompletionHandler:nil];
     }
     else
@@ -157,18 +167,32 @@ static UIViewController* currentModalViewController = nil;
     self.match = nil;
     self.presentingViewController = viewController;
     delegate= theDelegate;
-    [presentingViewController dismissModalViewControllerAnimated:NO];
-    
-    GKMatchRequest *request = [[[GKMatchRequest alloc] init] autorelease];
-    request.minPlayers = minPlayers;
-    request.maxPlayers = maxPlayers;
-    
-    GKMatchmakerViewController *mmvc =
-    [[[GKMatchmakerViewController alloc] initWithMatchRequest:request] autorelease];
-    mmvc.matchmakerDelegate = self;
-    
-    [presentingViewController presentModalViewController:mmvc animated:YES];
-    
+    if (pendingInvite != nil)
+    {        
+        [presentingViewController dismissModalViewControllerAnimated:NO];
+        GKMatchmakerViewController *mmvc = [[[GKMatchmakerViewController alloc] initWithInvite:pendingInvite] autorelease];
+        mmvc.matchmakerDelegate = self;
+        [presentingViewController presentModalViewController:mmvc animated:YES];
+        
+        self.pendingInvite = nil;
+        self.pendingPlayersToInvite = nil;
+        
+    }
+    else
+    {
+        [presentingViewController dismissModalViewControllerAnimated:NO];
+        GKMatchRequest *request = [[[GKMatchRequest alloc] init] autorelease];
+        request.minPlayers = minPlayers;
+        request.maxPlayers = maxPlayers;
+        request.playersToInvite = pendingPlayersToInvite;
+        GKMatchmakerViewController *mmvc =
+        [[[GKMatchmakerViewController alloc] initWithMatchRequest:request] autorelease];
+        mmvc.matchmakerDelegate = self;
+        [presentingViewController presentModalViewController:mmvc animated:YES];
+        
+        self.pendingInvite = nil;
+        self.pendingPlayersToInvite = nil;
+    }
 }
 
 #pragma mark GKMatchmakerViewControllerDelegate
@@ -176,6 +200,8 @@ static UIViewController* currentModalViewController = nil;
 // The user has cancelled matchmaking
 - (void)matchmakerViewControllerWasCancelled:(GKMatchmakerViewController *)viewController {
     [presentingViewController dismissModalViewControllerAnimated:YES];
+    NSLog(@"match cancel...");
+    [delegate matchCancel];
 }
 
 // Matchmaking has failed with an error
@@ -186,7 +212,7 @@ static UIViewController* currentModalViewController = nil;
 
 // A peer-to-peer match has been found, the game should start
 - (void)matchmakerViewController:(GKMatchmakerViewController *)viewController didFindMatch:(GKMatch *)theMatch {
-    [presentingViewController dismissModalViewControllerAnimated:YES];
+    [presentingViewController dismissViewControllerAnimated:YES completion:nil];
     self.match = theMatch;
     match.delegate= self;
     if (!matchStarted && match.expectedPlayerCount ==0) {

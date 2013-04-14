@@ -10,8 +10,7 @@ class GameOverLayer : public CCLayerColor
 public:
 	~GameOverLayer();
 
-	virtual bool initWithState(Game_Finish_State state); //CCLayer的儿子们都有这玩意儿。别忘了virtual关键字   
-	
+	virtual bool initWithState(Game_Finish_State state);
 	static GameOverLayer* create(Game_Finish_State state)
 	{
 		GameOverLayer* pRet = new GameOverLayer();
@@ -27,11 +26,25 @@ public:
 			return NULL;
 		}
 	}
+	virtual bool initWithString(const char* msg);
+	static GameOverLayer* create(const char* msg)
+	{
+		GameOverLayer* pRet = new GameOverLayer();
+		if (pRet && pRet->initWithString(msg))
+		{
+			pRet->autorelease();
+			return pRet;
+		}
+		else
+		{
+			delete pRet;
+			pRet = NULL;
+			return NULL;
+		}
+	}
+
 public:
 	void quit(CCObject* pSender);
-	void menuLottery(CCObject* pSender);
-	void callBackLottery(CCNode* node);
-	void callBackRemove(CCNode* node);
 };
 
 #endif

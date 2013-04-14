@@ -11,10 +11,12 @@
 #import<GameKit/GameKit.h>
 
 @protocol GCHelperDelegate
+-(void)matchCancel;
 - (void)matchStarted;
 - (void)matchEnded;
 - (void)match:(GKMatch *)match didReceiveData:(NSData *)data
    fromPlayer:(NSString *)playerID;
+- (void)inviteReceived;
 @end
 /*
 class GCHelperDelegate
@@ -34,6 +36,8 @@ class GCHelperDelegate
     BOOL matchStarted;
     id<GCHelperDelegate>delegate;
     NSMutableDictionary *playersDict;
+    GKInvite *pendingInvite;
+    NSArray *pendingPlayersToInvite;
 }
 
 @property (assign, readonly) BOOL gameCenterAvailable;
@@ -41,6 +45,8 @@ class GCHelperDelegate
 @property (retain) GKMatch *match;
 @property (assign) id<GCHelperDelegate>delegate;
 @property (retain) NSMutableDictionary *playersDict;
+@property (retain) GKInvite *pendingInvite;
+@property (retain) NSArray *pendingPlayersToInvite;
 
 + (GCHelper *)sharedInstance;
 - (void)authenticateLocalUser;
