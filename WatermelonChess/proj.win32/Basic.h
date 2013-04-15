@@ -32,7 +32,16 @@
 #define PIC_QUIT "quitButton.png"
 #define PIC_QUIT_SELECTED "quitButtonSelected.png"
 
-const int s_pics_num = 16;
+#define PIC_BTN_2PLAYER1 "btn_2player1.png"
+#define PIC_BTN_2PLAYER2 "btn_2player2.png"
+#define PIC_BTN_COMPUTER1 "btn_vsComputer1.png"
+#define PIC_BTN_COMPUTER2 "btn_vsComputer2.png"
+#define PIC_BTN_ONLINE1 "btn_online1.png"
+#define PIC_BTN_ONLINE2 "btn_online2.png"
+#define PIC_BTN_LEADBOARD1 "btn_leadboard1.png"
+#define PIC_BTN_LEADBOARD2 "btn_leadboard2.png"
+
+const int s_pics_num = 24;
 const std::string s_pics[s_pics_num] = {
 	PIC_CHESSBOARD1,
 	PIC_CHESSMAN2,
@@ -49,7 +58,15 @@ const std::string s_pics[s_pics_num] = {
 	PIC_RESUME,
 	PIC_RESUME_SELECTED,
 	PIC_QUIT,
-	PIC_QUIT_SELECTED
+	PIC_QUIT_SELECTED,
+	PIC_BTN_2PLAYER1,
+	PIC_BTN_2PLAYER2,
+	PIC_BTN_COMPUTER1,
+	PIC_BTN_COMPUTER2,
+	PIC_BTN_ONLINE1,
+	PIC_BTN_ONLINE2,
+	PIC_BTN_LEADBOARD1,
+	PIC_BTN_LEADBOARD2
 };
 
 enum GAME_STATE

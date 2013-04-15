@@ -40,7 +40,12 @@ bool MainMenuLayer::init()
 	this->addChild(musicMenu);
 
 	// 创建一个CCMenuItemFont    
-    CCMenuItemFont *item1 = CCMenuItemFont::create("2 Players", this, menu_selector(MainMenuLayer::menuCallbackPlay) );  
+	CCMenuItemImage* item1 = CCMenuItemImage::create(PIC_BTN_2PLAYER1, PIC_BTN_2PLAYER2, this, menu_selector(MainMenuLayer::menuCallbackPlay) ); 
+	CCMenuItemImage* item2 = CCMenuItemImage::create(PIC_BTN_COMPUTER1, PIC_BTN_COMPUTER2, this, menu_selector(MainMenuLayer::menuCallbackPlay2) ); 
+	CCMenuItemImage* item3 = CCMenuItemImage::create(PIC_BTN_ONLINE1, PIC_BTN_ONLINE2, this, menu_selector(MainMenuLayer::menuCallbackPlayNet) ); 
+	CCMenuItemImage* item4 = CCMenuItemImage::create(PIC_BTN_LEADBOARD1, PIC_BTN_LEADBOARD2, this, menu_selector(MainMenuLayer::menuCallbackRecording) ); 
+		
+    /*CCMenuItemFont *item1 = CCMenuItemFont::create("2 Players", this, menu_selector(MainMenuLayer::menuCallbackPlay) );  
 	item1->setFontSizeObj(100);
     //item2->setFontName("Marker Felt");  
     CCMenuItemFont *item2 = CCMenuItemFont::create("Vs Computer", this, menu_selector(MainMenuLayer::menuCallbackPlay2) );  
@@ -48,7 +53,7 @@ bool MainMenuLayer::init()
     CCMenuItemFont *item3 = CCMenuItemFont::create("Play online", this, menu_selector(MainMenuLayer::menuCallbackPlayNet) );  
     item3->setFontSizeObj(100);
     CCMenuItemFont *item4 = CCMenuItemFont::create("Recording", this, menu_selector(MainMenuLayer::menuCallbackRecording) );  
-    item4->setFontSizeObj(100);
+    item4->setFontSizeObj(100);*/
 
 
 	//创建CCMenu菜单，其他可认为是菜单项   
