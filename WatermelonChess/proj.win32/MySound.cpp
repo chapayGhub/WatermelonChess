@@ -6,7 +6,6 @@ int MySound::music_index = -1;
 void MySound::loadSounds()
 {
 	SimpleAudioEngine::sharedEngine()->preloadBackgroundMusic("background1.mp3");
-	SimpleAudioEngine::sharedEngine()->preloadBackgroundMusic("background2.mp3");
 	for(int i = 0; i < int(SOUND_COUNT); i++)
 		SimpleAudioEngine::sharedEngine()->preloadEffect(sound_effects[i]);	
 }

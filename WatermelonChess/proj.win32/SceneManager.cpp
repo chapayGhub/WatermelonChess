@@ -4,8 +4,8 @@
 #include "PlayLayer.h"
 #include "StopLayer.h"
 
-bool SceneManager::music = false;
-bool SceneManager::sound = false;
+bool SceneManager::music = true;
+bool SceneManager::sound = true;
 
 //--------------Translation类的定义----------------------   
 //下面定义了三种不同的转场，   
@@ -70,7 +70,7 @@ void SceneManager::initLoading()
 void SceneManager::goMenu(int transType)  
 {
 	if(music)
-		MySound::playBackGround(2);
+		MySound::playBackGround(1);
 	CCLayer* layer = MainMenuLayer::create();  
 	SceneManager::go(layer, transType);  
 }

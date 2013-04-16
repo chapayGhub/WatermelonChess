@@ -62,6 +62,8 @@ bool PlayLayer::init()
 	
 	m_chess.nextTurn();
 	nextTurn();
+
+	//MySound::playSound(SOUND_START);
 	return true;
 }
 
@@ -126,15 +128,16 @@ void PlayLayer::realMove()
 	CCSprite* chessman = (CCSprite*)getChildByTag(100+m_touchChessPos);
 	chessman->setTag(CHESS_BASE+m_moveToChessPos);
 	CCPoint pos = getChessPoint(m_moveToChessPos);
-	m_chessCircle->runAction(CCMoveTo::create(0.5f, pos));
-	chessman->runAction(CCSequence::create(CCMoveTo::create(0.5f, pos), 
+	m_chessCircle->runAction(CCMoveTo::create(0.2f, pos));
+	chessman->runAction(CCSequence::create(CCMoveTo::create(0.2f, pos), 
 		CCCallFunc::create(this, callfunc_selector(PlayLayer::callbackMoveDone)),
 		NULL));
 }
 
 void PlayLayer::callbackMoveDone()
 {
-	m_chessCircle->setVisible(false);
+	m_chessCircle->setVisible(false);	
+	MySound::playSound(SOUND_MOVEDONE_CHESS);
 	check();
 }
 
@@ -180,6 +183,11 @@ void PlayLayer::checkFinish()
 	Game_Finish_State state = GAME_FINISH_A_WIN;
 	if(!m_chess.isTurnA())
 		state = GAME_FINISH_B_WIN;
+	MySound::stopMusic();
+	if(!m_chess.isTurnA() && m_levelB > 0)
+		MySound::playSound(SOUND_LOSE);
+	else
+		MySound::playSound(SOUND_WIN);
 	GameOverLayer* gameOver = GameOverLayer::create(state);
 	addChild(gameOver, 1000);
 	setStopVisible(false);
@@ -253,6 +261,7 @@ void PlayLayer::selectChessman(int chessPos)
 		m_chessCircle->setPosition(getChessPoint(m_touchChessPos));
 		m_chessCircle->setVisible(true);
 		m_selected = true;
+		MySound::playSound(SOUND_SELECT_CHESS);
 	}
 	else
 	{
@@ -266,6 +275,8 @@ void PlayLayer::selectChessman(int chessPos)
 void PlayLayer::unselectChessman()
 {
 	//CCLog("unselect chess: %d",m_touchChessPos);
+	if(m_touchChessPos != -1)
+		MySound::playSound(SOUND_SELECT_CHESS);
 	m_touchChessPos = -1;
 	m_chessCircle->setVisible(false);
 	m_selected = false;
@@ -419,7 +430,7 @@ void PlayLayer::onExit()
 
 void PlayLayer::menuStopCallback(CCObject* pSender)
 {
-	MySound::playSound(SOUND_SELECT_PROP);
+	MySound::playSound(SOUND_MENU);
 	StopLayer* stop = StopLayer::create();
 	stop->initWithColor(ccc4(0,0,0,125));
 	this->addChild(stop, 100);

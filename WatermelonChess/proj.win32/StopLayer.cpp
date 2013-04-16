@@ -52,7 +52,7 @@ bool StopLayer::init()
 		music2 = tmp;
 	}
 	CCMenuItemToggle* music_toggle = CCMenuItemToggle::createWithTarget(this, menu_selector(StopLayer::music), music1, music2, NULL);
-	
+	/*
 	CCSprite* soundOn = CCSprite::create(PIC_SOUND_ON);
 	CCSprite* soundOff = CCSprite::create(PIC_SOUND_OFF);
 	CCMenuItemSprite* sound1 = CCMenuItemSprite::create(soundOn, soundOn);
@@ -64,8 +64,8 @@ bool StopLayer::init()
 		sound2 = tmp;
 	}
 	CCMenuItemToggle* sound_toggle = CCMenuItemToggle::createWithTarget(this, menu_selector(StopLayer::sound), sound1, sound2, NULL);
-
-	CCMenu *musicMenu = CCMenu::create(music_toggle,sound_toggle,NULL);
+	*/
+	CCMenu *musicMenu = CCMenu::create(music_toggle,/*sound_toggle,*/NULL);
 	musicMenu->setPosition(ccp(s.width/2,s.height/2+200));
 	musicMenu->alignItemsHorizontally();
 	this->addChild(musicMenu);
@@ -151,7 +151,7 @@ void StopLayer::ccTouchCancelled(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEv
 
 void StopLayer::resume(cocos2d::CCObject *pSender)
 {  
-	MySound::playSound(SOUND_SELECT_PROP);
+	MySound::playSound(SOUND_MENU);
 	((PlayLayer*)this->getParent())->setStopVisible(true);
 	this->removeFromParentAndCleanup(false);
 	//MySound::resumeMusic();
@@ -162,8 +162,8 @@ void StopLayer::quit(cocos2d::CCObject *pSender)
 {  
 	//SceneManager::pop();
 	//this->removeFromParentAndCleanup(false);
-	MySound::playSound(SOUND_SELECT_PROP);
-	MySound::stopMusic();
+	MySound::playSound(SOUND_MENU);
+	//MySound::stopMusic();
 	SceneManager::goMenu();  
 	//back就是回主菜单，这里调用了人见人爱 花见花开的静态函数 goMenu  
 }
@@ -172,13 +172,15 @@ void StopLayer::music(CCObject *pSender)
 {
 	if(SceneManager::music)
 	{
-		MySound::playSound(SOUND_SELECT_PROP);
+		MySound::playSound(SOUND_MENU);
 		SceneManager::music = false;
+		SceneManager::sound = false;
 		MySound::stopMusic();
 	}
 	else
 	{
 		SceneManager::music = true;
+		SceneManager::sound = true;
 		MySound::playBackGround(1);
 	}
 	/*CCMenuItemToggle* toggle = (CCMenuItemToggle*)pSender;
@@ -192,7 +194,7 @@ void StopLayer::sound(CCObject *pSender)
 {
 	if(SceneManager::sound)
 	{
-		MySound::playSound(SOUND_SELECT_PROP);
+		MySound::playSound(SOUND_MENU);
 		SceneManager::sound = false;
 	}
 	else

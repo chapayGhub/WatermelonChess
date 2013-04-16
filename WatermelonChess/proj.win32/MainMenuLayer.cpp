@@ -79,42 +79,44 @@ void MainMenuLayer::loadImage()
 
 void MainMenuLayer::menuCallbackPlay(CCObject* sender) 
 {
-	MySound::playSound(SOUND_SELECT_PROP);
+	MySound::playSound(SOUND_MENU);
 	
 	SceneManager::goPlay();
 }
 
 void MainMenuLayer::menuCallbackPlay2(CCObject* sender) 
 {
-	MySound::playSound(SOUND_SELECT_PROP);
+	MySound::playSound(SOUND_MENU);
 	
 	SceneManager::goPlay2();
 }
 
 void MainMenuLayer::menuCallbackPlayNet(CCObject* sender) 
 {
-	MySound::playSound(SOUND_SELECT_PROP);
+	MySound::playSound(SOUND_MENU);
 	
 	SceneManager::goPlayNet();
 }
 
 void MainMenuLayer::menuCallbackRecording(CCObject* sender) 
 {
-	MySound::playSound(SOUND_SELECT_PROP);
+	MySound::playSound(SOUND_MENU);
 	SceneManager::goRecording();
 }
 
 void MainMenuLayer::music(CCObject *pSender)
 {
-	MySound::playSound(SOUND_SELECT_PROP);
+	MySound::playSound(SOUND_MENU);
 	if(SceneManager::music)
 	{
 		SceneManager::music = false;
+		SceneManager::sound = false;
 		MySound::stopMusic();
 	}
 	else
 	{
 		SceneManager::music = true;
-		MySound::playBackGround(2);
+		SceneManager::sound = true;
+		MySound::playBackGround(1);
 	}
 }

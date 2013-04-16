@@ -8,39 +8,23 @@ using namespace CocosDenshion;
 
 enum Sound_Type
 {
-	SOUND_INIT,
-	SOUND_OPEN,
-	SOUND_MONEY,
-	SOUND_UPGRADE,
-	SOUND_FIND_PROP,
-	SOUND_SELECT_PROP,
-	SOUND_DROP_PROP,
-	SOUND_GAMEOVER,
-	SOUND_BOMB,
-	SOUND_DEAD,
-	SOUND_LEVEL_COMPLETE,
-	SOUND_PROP_FULL,
-	SOUND_PROP_DO,
-	SOUND_SKILL_DEFENSE,
+	SOUND_MENU,
+	SOUND_START,
+	SOUND_SELECT_CHESS,
+	SOUND_MOVEDONE_CHESS,
+	SOUND_WIN,
+	SOUND_LOSE,
 
 	SOUND_COUNT
 };
 
 const char* const sound_effects[SOUND_COUNT] = {
-	"sound_init.wav",
-	"sound_open.wav",
-	"sound_money.mp3",
-	"sound_upgrade.mp3",
-	"sound_findProp.mp3",
-	"sound_selectProp.mp3",
-	"sound_propDown.mp3",
-	"sound_gameOver.mp3",
-	"sound_bomb.wav",
-	"sound_dead.wav",
-	"sound_levelComplete.mp3",
-	"sound_propFull.mp3",
-	"sound_propDo.wav",
-	"sound_defense.wav",
+	"sound_menu.wav",
+	"sound_start.wav",
+	"sound_select.wav",
+	"sound_movedone.wav",
+	"sound_win.mp3",
+	"sound_lose.mp3",
 };
 
 class MySound

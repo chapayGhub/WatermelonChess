@@ -25,8 +25,6 @@
 #define PIC_STOPBUTTON_SELECTED "stopButtonSelected.png"
 #define PIC_MUSIC_ON "buttonMusic1.png"
 #define PIC_MUSIC_OFF "buttonMusic2.png"
-#define PIC_SOUND_ON "buttonSound1.png"
-#define PIC_SOUND_OFF "buttonSound2.png"
 #define PIC_RESUME "resumeButton.png"
 #define PIC_RESUME_SELECTED "resumeButtonSelected.png"
 #define PIC_QUIT "quitButton.png"
@@ -41,7 +39,7 @@
 #define PIC_BTN_LEADBOARD1 "btn_leadboard1.png"
 #define PIC_BTN_LEADBOARD2 "btn_leadboard2.png"
 
-const int s_pics_num = 24;
+const int s_pics_num = 22;
 const std::string s_pics[s_pics_num] = {
 	PIC_CHESSBOARD1,
 	PIC_CHESSMAN2,
@@ -53,8 +51,6 @@ const std::string s_pics[s_pics_num] = {
 	PIC_STOPBUTTON_SELECTED,
 	PIC_MUSIC_ON,
 	PIC_MUSIC_OFF,
-	PIC_SOUND_ON,
-	PIC_SOUND_OFF,
 	PIC_RESUME,
 	PIC_RESUME_SELECTED,
 	PIC_QUIT,
