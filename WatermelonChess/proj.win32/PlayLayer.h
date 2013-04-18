@@ -60,9 +60,11 @@ private:
 	bool m_selected;
 	bool m_turnA;
 	bool m_movable;
-	CCSprite* m_chessCircle;
 	CCLabelTTF* m_labelTurnA;
 	CCLabelTTF* m_labelTurnB;
+	CCSprite* m_chess1Select;
+	CCSprite* m_chess2Select;
+	CCSprite* m_hideChess;
 
 	Chess m_chess;
 	CCMenu* m_stopMenu;

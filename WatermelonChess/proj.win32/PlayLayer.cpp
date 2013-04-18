@@ -32,10 +32,16 @@ bool PlayLayer::init()
 	addChild(chessboard);
 	//chessmen
 	initBoard();
-	//chessCircle
-	m_chessCircle = CCSprite::create(PIC_SELECT_CIRCLE1);
-	m_chessCircle->setVisible(false);
-	addChild(m_chessCircle,2);
+
+	//select and hide chess...
+	m_hideChess = NULL;
+	m_chess1Select = CCSprite::create(PIC_CHESSMAN1S);
+	m_chess2Select = CCSprite::create(PIC_CHESSMAN2S);
+	m_chess1Select->setVisible(false);
+	m_chess2Select->setVisible(false);
+	addChild(m_chess1Select,2);
+	addChild(m_chess2Select,2);
+
 	//turns label...
 	m_labelTurnA = CCLabelTTF::create("Blue turns", "Marker Felt", 50);
 	m_labelTurnA->setAnchorPoint(ccp(0.5,0.5));
@@ -90,7 +96,7 @@ PlayLayer::~PlayLayer()
 
 void PlayLayer::initBoard()
 {
-#if 1
+#if 0
 	for(int i = 0; i < 21; i++)
 	{
 		char buf[3];
@@ -128,7 +134,8 @@ void PlayLayer::realMove()
 	CCSprite* chessman = (CCSprite*)getChildByTag(100+m_touchChessPos);
 	chessman->setTag(CHESS_BASE+m_moveToChessPos);
 	CCPoint pos = getChessPoint(m_moveToChessPos);
-	m_chessCircle->runAction(CCMoveTo::create(0.2f, pos));
+	CCSprite* chessSelect = m_chess.isTurnA()? m_chess1Select : m_chess2Select;
+	chessSelect->runAction(CCMoveTo::create(0.2f, pos));
 	chessman->runAction(CCSequence::create(CCMoveTo::create(0.2f, pos), 
 		CCCallFunc::create(this, callfunc_selector(PlayLayer::callbackMoveDone)),
 		NULL));
@@ -136,7 +143,10 @@ void PlayLayer::realMove()
 
 void PlayLayer::callbackMoveDone()
 {
-	m_chessCircle->setVisible(false);	
+	CCSprite* chessSelect = m_chess.isTurnA()? m_chess1Select : m_chess2Select;
+	chessSelect->setVisible(false);
+	if(m_hideChess)
+		m_hideChess->setVisible(true);
 	MySound::playSound(SOUND_MOVEDONE_CHESS);
 	check();
 }
@@ -252,38 +262,58 @@ void PlayLayer::nextTurn()
 
 void PlayLayer::selectChessman(int chessPos)
 {
+	CCSprite* chessSelect = m_chess.isTurnA()? m_chess1Select : m_chess2Select;
 	ChessPointState moveToState = m_chess.getChessPosState(chessPos);
 	if( (m_chess.isTurnA() && moveToState == CHESS_POINT_A) ||
 		(!m_chess.isTurnA() && moveToState == CHESS_POINT_B) )
 	{
+		if(m_touchChessPos!=-1)
+		{
+			CCSprite* chessman = (CCSprite*)getChildByTag(100+m_touchChessPos);
+			chessman->setVisible(true);
+		}
+		m_hideChess = (CCSprite*)getChildByTag(100+chessPos);
+		m_hideChess->setVisible(false);
+
 		//CCLog("select chess: %d",chessPos);
 		m_touchChessPos = chessPos;
-		m_chessCircle->setPosition(getChessPoint(m_touchChessPos));
-		m_chessCircle->setVisible(true);
+		chessSelect->setPosition(getChessPoint(m_touchChessPos));
+		chessSelect->setVisible(true);
 		m_selected = true;
 		MySound::playSound(SOUND_SELECT_CHESS);
 	}
 	else
 	{
+		if(m_touchChessPos!=-1)
+		{
+			m_hideChess = (CCSprite*)getChildByTag(100+m_touchChessPos);
+			m_hideChess->setVisible(true);
+		}
 		//CCLog("cant select");
 		m_touchChessPos = -1;
-		m_chessCircle->setVisible(false);
+		chessSelect->setVisible(false);
 		m_selected = false;
 	}
 }
 
 void PlayLayer::unselectChessman()
 {
+	CCSprite* chessSelect = m_chess.isTurnA()? m_chess1Select : m_chess2Select;
 	//CCLog("unselect chess: %d",m_touchChessPos);
 	if(m_touchChessPos != -1)
+	{
+		if(m_hideChess)
+			m_hideChess->setVisible(true);
 		MySound::playSound(SOUND_SELECT_CHESS);
+	}
 	m_touchChessPos = -1;
-	m_chessCircle->setVisible(false);
+	chessSelect->setVisible(false);
 	m_selected = false;
 }
 
 void PlayLayer::moveChessman()
 {
+	CCSprite* chessSelect = m_chess.isTurnA()? m_chess1Select : m_chess2Select;
 	ChessPointState moveToState = m_chess.getChessPosState(m_moveToChessPos);
 	if(moveToState == CHESS_POINT_NONE)
 	{
@@ -291,6 +321,7 @@ void PlayLayer::moveChessman()
 		{
 			//CCLog("move chess: %d to %d", m_touchChessPos, m_moveToChessPos);
 			realMove();
+
 			m_touchChessPos = -1;
 			m_moveToChessPos = -1;
 			m_selected = false;

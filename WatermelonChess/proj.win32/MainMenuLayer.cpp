@@ -16,11 +16,15 @@ bool MainMenuLayer::init()
     CCSize s = CCDirector::sharedDirector()->getWinSize();
 
 	//background...
-	CCScale9Sprite* bg = CCScale9Sprite::create(PIC_ROUND);
+	/*CCScale9Sprite* bg = CCScale9Sprite::create(PIC_ROUND);
 	bg->setPreferredSize(CCSizeMake(600, 600));
 	bg->setAnchorPoint(ccp(0.5,0.5));
 	//bg->setColor(ccc3(50,30,50));
 	bg->setPosition(ccp(s.width*0.5, s.height*0.5));
+	addChild(bg);*/
+	
+	CCSprite* bg = CCSprite::create(PIC_MAIN_BACKGROUND);
+	bg->setAnchorPoint(ccp(0,0));
 	addChild(bg);
 	
 	//music button...
