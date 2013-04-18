@@ -26,6 +26,11 @@ bool PlayLayer::init()
 	m_levelA = 0;
 	m_levelB = 0;
 
+	//background
+	CCSprite* bg = CCSprite::create(PIC_MAIN_BACKGROUND);
+	bg->setPosition(ccp(s.width*0.5, s.height*0.5));
+	addChild(bg);
+
 	//board
 	CCSprite* chessboard = CCSprite::create(PIC_CHESSBOARD1);
 	chessboard->setPosition(ccp(s.width*0.5, s.height*0.5));

@@ -14,6 +14,7 @@
 #define CCGetBool CCUserDefault::sharedUserDefault()->getBoolForKey  
 
 #define PIC_MAIN_BACKGROUND "main_background.png"
+#define PIC_MAIN_TITLE "main_title.png"
 #define PIC_CHESSBOARD1 "chessboard1.png"
 #define PIC_CHESSMAN1 "chessman1.png"
 #define PIC_CHESSMAN2 "chessman2.png"
@@ -42,9 +43,10 @@
 #define PIC_BTN_LEADBOARD1 "btn_leadboard1.png"
 #define PIC_BTN_LEADBOARD2 "btn_leadboard2.png"
 
-const int s_pics_num = 26;
+const int s_pics_num = 27;
 const std::string s_pics[s_pics_num] = {
 	PIC_MAIN_BACKGROUND,
+	PIC_MAIN_TITLE,
 	PIC_CHESSBOARD1,
 	PIC_CHESSMAN1,
 	PIC_CHESSMAN2,

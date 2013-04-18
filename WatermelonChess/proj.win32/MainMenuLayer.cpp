@@ -26,6 +26,9 @@ bool MainMenuLayer::init()
 	CCSprite* bg = CCSprite::create(PIC_MAIN_BACKGROUND);
 	bg->setAnchorPoint(ccp(0,0));
 	addChild(bg);
+	CCSprite* bgTitle = CCSprite::create(PIC_MAIN_TITLE);
+	bgTitle->setPosition(ccp(s.width*0.5,830));
+	addChild(bgTitle);
 	
 	//music button...
 	CCSprite* musicOn = CCSprite::create(PIC_MUSIC_ON);
