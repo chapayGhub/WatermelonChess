@@ -524,18 +524,22 @@ void NetPlayLayer::commitScore()
 {
     CCLog("winScore:%d",winScore);
     [[GCHelper sharedInstance] commitScore:@"connectWin" value:winScore];
+    [[GCHelper sharedInstance] commitAchievement:@"winConnect50" value:2];
+    [[GCHelper sharedInstance] commitAchievement:@"winConnect10" value:10];
+    [[GCHelper sharedInstance] commitAchievement:@"winConnect1" value:100];
+    /*
     if(winScore >= 50)
     {
-        [[GCHelper sharedInstance] commitAchievement:@"winConnect50" value:50];
+        [[GCHelper sharedInstance] commitAchievement:@"winConnect50" value:100];
     }
     else if(winScore >= 10)
     {
-        [[GCHelper sharedInstance] commitAchievement:@"winConnect10" value:10];
+        [[GCHelper sharedInstance] commitAchievement:@"winConnect10" value:100];
     }
     else if(winScore >= 1)
     {
-        [[GCHelper sharedInstance] commitAchievement:@"winConnect1" value:1];
-    }
+        [[GCHelper sharedInstance] commitAchievement:@"winConnect1" value:100];
+    }*/
 }
 
 void NetPlayLayer::nextTurn()

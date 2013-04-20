@@ -278,7 +278,7 @@ void PlayLayer::checkFinish()
 		gameOver = GameOverLayer::create(state);
 	else
 	{
-		char* msg = m_chess.isTurnA() ? "你赢了！" : "你输了～";
+		const char* msg = m_chess.isTurnA() ? "你赢了！" : "你输了～";
 		gameOver = GameOverLayer::create(a2u(msg).c_str());
 	}
 	addChild(gameOver, 1000);

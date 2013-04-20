@@ -136,6 +136,7 @@
     <ClInclude Include="Basic.h" />
     <ClInclude Include="Chess.h" />
     <ClInclude Include="GameOverLayer.h" />
+    <ClInclude Include="HelpLayer.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="MainMenuLayer.h" />
     <ClInclude Include="MySound.h" />
@@ -149,6 +150,7 @@
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="Chess.cpp" />
     <ClCompile Include="GameOverLayer.cpp" />
+    <ClCompile Include="HelpLayer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainMenuLayer.cpp" />
     <ClCompile Include="MySound.cpp" />

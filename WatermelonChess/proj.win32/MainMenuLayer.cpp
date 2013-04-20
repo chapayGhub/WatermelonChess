@@ -11,6 +11,8 @@ bool MainMenuLayer::init()
         return false;  
     }
 
+	loadImage();
+
     this->setTouchEnabled(true);//启用触摸
       
     CCSize s = CCDirector::sharedDirector()->getWinSize();
@@ -50,7 +52,8 @@ bool MainMenuLayer::init()
 	CCMenuItemImage* item1 = CCMenuItemImage::create(PIC_BTN_2PLAYER1, PIC_BTN_2PLAYER2, this, menu_selector(MainMenuLayer::menuCallbackPlay) ); 
 	CCMenuItemImage* item2 = CCMenuItemImage::create(PIC_BTN_COMPUTER1, PIC_BTN_COMPUTER2, this, menu_selector(MainMenuLayer::menuCallbackPlay2) ); 
 	CCMenuItemImage* item3 = CCMenuItemImage::create(PIC_BTN_ONLINE1, PIC_BTN_ONLINE2, this, menu_selector(MainMenuLayer::menuCallbackPlayNet) ); 
-	CCMenuItemImage* item4 = CCMenuItemImage::create(PIC_BTN_LEADBOARD1, PIC_BTN_LEADBOARD2, this, menu_selector(MainMenuLayer::menuCallbackRecording) ); 
+	CCMenuItemImage* item4 = CCMenuItemImage::create(PIC_BTN_LEADBOARD1, PIC_BTN_LEADBOARD2, this, menu_selector(MainMenuLayer::menuCallbackHelp) ); 
+	//CCMenuItemImage* item5 = CCMenuItemImage::create(PIC_BTN_LEADBOARD1, PIC_BTN_LEADBOARD2, this, menu_selector(MainMenuLayer::menuCallbackRecording) ); 
 		
     /*CCMenuItemFont *item1 = CCMenuItemFont::create("2 Players", this, menu_selector(MainMenuLayer::menuCallbackPlay) );  
 	item1->setFontSizeObj(100);
@@ -67,13 +70,33 @@ bool MainMenuLayer::init()
     CCMenu* menu = CCMenu::create( item1, item2, item3, item4, NULL);  
     menu->alignItemsVertically();//可以理解为设置成垂直排列   
     //menu->alignItemsHorizontally();//水平排列   
-
-	addChild(menu);
-    menu->setPosition(ccp(s.width/2, s.height/2));  
+    menu->setPosition(ccp(s.width/2, s.height/2));
+	addChild(menu);	
 	
-	loadImage();
-	return true;
+	//leaderboard, achievement, weibo...
+	item1 = CCMenuItemImage::create(PIC_ROUND, PIC_ROUND, this, menu_selector(MainMenuLayer::menuCallbackLeaderboard) ); 
+	item2 = CCMenuItemImage::create(PIC_ROUND, PIC_ROUND, this, menu_selector(MainMenuLayer::menuCallbackAchievement) ); 
+	item3 = CCMenuItemImage::create(PIC_ROUND, PIC_ROUND, this, menu_selector(MainMenuLayer::menuCallbackWeibo) ); 
+	/*
+	menu = CCMenu::create(item1,NULL);
+	menu->setAnchorPoint(ccp(0.5,0.5));
+	menu->setPosition(ccp(150,120));
+	addChild(menu);
+	menu = CCMenu::create(item2,NULL);
+	menu->setAnchorPoint(ccp(0.5,0.5));
+	menu->setPosition(ccp(320,120));
+	addChild(menu);
+	menu = CCMenu::create(item3,NULL);
+	menu->setAnchorPoint(ccp(0.5,0.5));
+	menu->setPosition(ccp(490,120));
+	addChild(menu);*/
+	
+	menu = CCMenu::create(item1, item2, item3, NULL);
+    menu->alignItemsHorizontally();//水平排列menu
+    menu->setPosition(ccp(s.width/2, 120));
+	addChild(menu);
 
+	return true;
 }
 
 void MainMenuLayer::loadImage()
@@ -107,11 +130,33 @@ void MainMenuLayer::menuCallbackPlayNet(CCObject* sender)
 #endif
 }
 
-void MainMenuLayer::menuCallbackRecording(CCObject* sender) 
+void MainMenuLayer::menuCallbackHelp(CCObject* sender) 
+{
+	MySound::playSound(SOUND_MENU);
+	SceneManager::goHelp();
+}
+
+void MainMenuLayer::menuCallbackLeaderboard(CCObject* sender) 
 {
 	MySound::playSound(SOUND_MENU);
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-	SceneManager::goRecording();
+	SceneManager::goLeaderboard();
+#endif
+}
+
+void MainMenuLayer::menuCallbackAchievement(CCObject* sender) 
+{
+	MySound::playSound(SOUND_MENU);
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+	SceneManager::goAchievement();
+#endif
+}
+	
+void MainMenuLayer::menuCallbackWeibo(CCObject* sender) 
+{
+	MySound::playSound(SOUND_MENU);
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+	SceneManager::goWeibo();
 #endif
 }
 

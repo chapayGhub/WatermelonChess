@@ -19,8 +19,12 @@ public:
 	void menuCallbackPlay(CCObject* sender);
 	void menuCallbackPlay2(CCObject* sender);
 	void menuCallbackPlayNet(CCObject* sender);
-	void menuCallbackRecording(CCObject* sender);
+	void menuCallbackHelp(CCObject* sender);
 	void music(CCObject *pSender);
+	
+	void menuCallbackLeaderboard(CCObject* sender);
+	void menuCallbackAchievement(CCObject* sender);
+	void menuCallbackWeibo(CCObject* sender);
 };
 
 #endif

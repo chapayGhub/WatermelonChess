@@ -17,6 +17,7 @@
 #import "YouMiConfig.h"
 #import "YouMiView.h"
 #endif
+#import "SinaProxy.h"
 
 @implementation AppController
 
@@ -102,6 +103,17 @@ static AppDelegate s_sharedApplication;
     return YES;
 }
 
+-(BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
+{    
+    SinaProxy* proxy = [SinaProxy sharedInstance];
+    return [proxy.sinaweibo handleOpenURL:url];
+}
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    SinaProxy* proxy = [SinaProxy sharedInstance];
+    return [proxy.sinaweibo handleOpenURL:url];
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     /*

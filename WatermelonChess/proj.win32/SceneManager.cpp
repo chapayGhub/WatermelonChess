@@ -3,6 +3,7 @@
 #include "MainMenuLayer.h"
 #include "PlayLayer.h"
 #include "StopLayer.h"
+#include "HelpLayer.h"
 
 bool SceneManager::music = true;
 bool SceneManager::sound = true;
@@ -91,6 +92,12 @@ void SceneManager::goPlay2()
 	//看看go函数的定义...这个layer直接被他扔到Scene里了  
 }  
 
+void SceneManager::goHelp()
+{
+	HelpLayer* layer = HelpLayer::create();
+	SceneManager::push(layer);
+}
+
 void SceneManager::goStop()
 {
 	CCLayerColor* layer = StopLayer::create();
@@ -126,7 +133,8 @@ void SceneManager::push(CCLayer* layer)
 	CCScene* newScene = SceneManager::wrap(layer);
 	if (director->getRunningScene()) //这句话 很有可能写的不对啊  有哪位大侠知道怎么写 告知下...   
 	{  
-		director->pushScene( newScene);
+		CCTransitionScene* transScene = SceneManager::createTransition(newScene, 0);
+		director->pushScene(transScene);
 	}
 }
 

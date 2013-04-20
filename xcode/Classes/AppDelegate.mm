@@ -9,6 +9,7 @@
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
 #import"GCHelper.h"
+#import "SinaProxy.h"
 #endif
 
 using namespace CocosDenshion;
@@ -67,21 +68,31 @@ void SceneManager::goPlayNet()
 #endif
 }
 
-void SceneManager::goRecording(int transType)
+void SceneManager::goLeaderboard(int transType)
 {
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     [[GCHelper sharedInstance] showLeaderboard];
-    //[[GCHelper sharedInstance] showAchivement];
-#else
-    CCLog("not ios platform...");
-#endif
+}
+
+void SceneManager::goAchievement(int transType)
+{
+    [[GCHelper sharedInstance] showAchivement];
+}
+
+
+void SceneManager::goWeibo(int transType)
+{
+    [[SinaProxy sharedInstance] likeWatermelonChess];
 }
 
 void PlayLayer::commitWinAIAchivement(int winCount)
 {
+    [[GCHelper sharedInstance] commitAchievement:@"winAI50" value:2];
+    [[GCHelper sharedInstance] commitAchievement:@"winAI10" value:10];
+    [[GCHelper sharedInstance] commitAchievement:@"winAI1" value:100];
+    /*
     if(winCount >= 50)
     {
-        [[GCHelper sharedInstance] commitAchievement:@"winAI50" value:50];
+        [[GCHelper sharedInstance] commitAchievement:@"winAI50" value:2];
     }
     else if(winCount >= 10)
     {
@@ -89,8 +100,8 @@ void PlayLayer::commitWinAIAchivement(int winCount)
     }
     else if(winCount >= 1)
     {
-        [[GCHelper sharedInstance] commitAchievement:@"winAI1" value:1];
-    }
+        [[GCHelper sharedInstance] commitAchievement:@"winAI1" value:100];
+    }*/
 }
 
 
