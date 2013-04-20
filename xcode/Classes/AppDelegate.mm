@@ -51,7 +51,6 @@ bool AppDelegate::applicationDidFinishLaunching()
 #else
     CCLog("not ios platform...");
 #endif
-    
     return true;
 }
 
@@ -59,7 +58,10 @@ void SceneManager::goPlayNet()
 {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
 	NetPlayLayer* layer = NetPlayLayer::create();
-	SceneManager::go(layer);
+	//SceneManager::go(layer);
+    CCDirector* director = CCDirector::sharedDirector();
+	CCScene* newScene = SceneManager::wrap(layer);
+    director->replaceScene(newScene);
 #else
     CCLog("not ios platform...");
 #endif
@@ -68,12 +70,29 @@ void SceneManager::goPlayNet()
 void SceneManager::goRecording(int transType)
 {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-    //[[GCHelper sharedInstance] showLeaderboard];
-    [[GCHelper sharedInstance] showAchivement];
+    [[GCHelper sharedInstance] showLeaderboard];
+    //[[GCHelper sharedInstance] showAchivement];
 #else
     CCLog("not ios platform...");
 #endif
 }
+
+void PlayLayer::commitWinAIAchivement(int winCount)
+{
+    if(winCount >= 50)
+    {
+        [[GCHelper sharedInstance] commitAchievement:@"winAI50" value:50];
+    }
+    else if(winCount >= 10)
+    {
+        [[GCHelper sharedInstance] commitAchievement:@"winAI10" value:10];
+    }
+    else if(winCount >= 1)
+    {
+        [[GCHelper sharedInstance] commitAchievement:@"winAI1" value:1];
+    }
+}
+
 
 // This function will be called when the app is inactive. When comes a phone call,it's be invoked too
 void AppDelegate::applicationDidEnterBackground()

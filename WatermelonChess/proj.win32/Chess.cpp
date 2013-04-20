@@ -235,7 +235,6 @@ bool findIntInVector(vector<int>& chessmen, int chessman)
 bool Chess::hasBreath(int chessman, vector<int>& together)
 {
 	ChessPointState type = m_chessboard[chessman];
-	bool breath = false;
 	for(size_t i = 0; i < m_around[chessman].size(); i++)
 	{
 		ChessPointState aroundType = m_chessboard[m_around[chessman][i]];

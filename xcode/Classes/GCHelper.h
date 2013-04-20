@@ -55,6 +55,9 @@ class GCHelperDelegate
 - (void)leaderboardViewControllerDidFinish:(GKLeaderboardViewController *)viewController;
 - (void)achievementViewControllerDidFinish:(GKAchievementViewController *)viewController;
 
+- (void)commitAchievement:(NSString*)acid value:(int)value;
+- (void)commitScore:(NSString*)scoreId value:(int)value;
+
 - (void)findMatchWithMinPlayers:(int)minPlayers maxPlayers:(int)maxPlayers
                        viewController:(UIViewController *)viewController
                        delegate:(id<GCHelperDelegate>)theDelegate;

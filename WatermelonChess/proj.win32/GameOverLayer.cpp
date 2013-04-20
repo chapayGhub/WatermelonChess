@@ -20,25 +20,25 @@ bool GameOverLayer::initWithState(Game_Finish_State state)
 	
     this->setTouchEnabled(true);
 	
-	//background...
+	/*//background...
 	CCScale9Sprite* bg = CCScale9Sprite::create(PIC_ROUND);
 	bg->setPreferredSize(CCSizeMake(480,640));
 	bg->setColor(ccc3(153,51,250));
 	bg->setOpacity(128);
 	bg->setPosition(ccp(s.width*0.5, s.height*0.5));
-	addChild(bg);
+	addChild(bg);*/
 	
 	//game info...
 	char buf[50];
 	if(state == GAME_FINISH_A_WIN)
-		sprintf(buf, "Blue Win!");
+		sprintf(buf, "蓝方赢了!");
 	else if(state == GAME_FINISH_B_WIN)
-		sprintf(buf, "Pink Win!");
+		sprintf(buf, "红方赢了!");
 	else
-		sprintf(buf, "Draw~~");
-	CCLabelTTF* label = CCLabelTTF::create(buf, "Marker Felt", 100.0/*, CCSizeMake(200, 50), kCCTextAlignmentLeft*/);
+		sprintf(buf, "打了个平手~");
+	CCLabelTTF* label = CCLabelTTF::create(a2u(buf).c_str(), "Marker Felt", 90.0/*, CCSizeMake(200, 50), kCCTextAlignmentLeft*/);
 	label->setPosition(ccp(s.width*0.5, s.height*0.5));
-	label->setColor(ccc3(0,0,0));
+	//label->setColor(ccc3(0,0,0));
 	addChild(label);
 
 	//quit menu
@@ -67,18 +67,18 @@ bool GameOverLayer::initWithString(const char* msg)
 	
     this->setTouchEnabled(true);
 	
-	//background...
+	/*//background...
 	CCScale9Sprite* bg = CCScale9Sprite::create(PIC_ROUND);
 	bg->setPreferredSize(CCSizeMake(480,640));
 	bg->setColor(ccc3(153,51,250));
 	bg->setOpacity(128);
 	bg->setPosition(ccp(s.width*0.5, s.height*0.5));
-	addChild(bg);
+	addChild(bg);*/
 	
 	//game info...
-	CCLabelTTF* label = CCLabelTTF::create(msg, "Marker Felt", 100.0/*, CCSizeMake(200, 50), kCCTextAlignmentLeft*/);
+	CCLabelTTF* label = CCLabelTTF::create(msg, "Marker Felt", 90.0/*, CCSizeMake(200, 50), kCCTextAlignmentLeft*/);
 	label->setPosition(ccp(s.width*0.5, s.height*0.5));
-	label->setColor(ccc3(0,0,0));
+	//label->setColor(ccc3(0,0,0));
 	addChild(label);
 
 	//quit menu

@@ -1,6 +1,14 @@
 #ifndef __BASIC_H__
 #define __BASIC_H__   
 
+#include "iconv.h"
+extern int code_convert(const char *from_charset,
+	const char *to_charset, 
+	const char *inbuf, size_t inlen,
+	char *outbuf, size_t outlen);
+extern std::string u2a(const char *inbuf);
+extern std::string a2u(const char *inbuf);
+
 #define CCSetString CCUserDefault::sharedUserDefault()->setStringForKey  
   
 #define CCSetInt CCUserDefault::sharedUserDefault()->setIntegerForKey  

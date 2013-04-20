@@ -14,8 +14,10 @@ public:
     static void goMenu(int transType = 0);
 	static void goPlay();
 	static void goPlay2();
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
 	static void goPlayNet();
 	static void goRecording(int transType = 0);
+#endif
 	static void goStop();
     static void go(CCLayer* layer, int transType = 0);
     static void push(CCLayer* layer);  

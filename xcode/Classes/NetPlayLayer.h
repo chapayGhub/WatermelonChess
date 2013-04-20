@@ -9,6 +9,7 @@
 #ifndef __WatermelonChess__NetPlayLayer__
 #define __WatermelonChess__NetPlayLayer__
 
+#include "PlayLayer.h"
 #include "Chess.h"
 #include "cocos2d.h"
 USING_NS_CC;
@@ -143,9 +144,11 @@ private:
 	int m_moveToChessPos;
 	bool m_selected;
 	bool m_movable;
-	CCSprite* m_chessCircle;
 	CCLabelTTF* m_labelTurnA;
 	CCLabelTTF* m_labelTurnB;
+	CCSprite* m_chess1Select;
+	CCSprite* m_chess2Select;
+	CCSprite* m_hideChess;
     
 	Chess m_chess;
 	CCMenu* m_stopMenu;
@@ -154,8 +157,12 @@ private:
 public:
     void matchStarted();
     void matchEnded();
+    void matchCancel();
     void matchData(NSData* data, NSString* playerID);
     void restartGame();
+    void commitScore();
+    int winScore;
+    int loseScore;
     
 private:
     void setGameState(GameState state);
@@ -171,8 +178,10 @@ private:
     bool receivedRandom;
     bool isPlayer1;
     NSString* otherPlayerID;
-    NSString* myNickName;
-    NSString* otherNickName;
+    std::string myNickName;
+    std::string otherNickName;
+    bool isCancel;
+    CCLabelTTF* m_waitLabel;
 };
 
 #endif /* defined(__WatermelonChess__NetPlayLayer__) */

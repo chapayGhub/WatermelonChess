@@ -35,7 +35,7 @@ USING_NS_CC_EXT;
 
 - (void)matchCancel
 {
-    SceneManager::goMenu();
+    m_playLayer->matchCancel();
 }
 
 - (void)matchStarted
@@ -79,11 +79,12 @@ void NetPlayLayer::matchEnded()
     [GCHelper sharedInstance].match = nil;
     CCLog("end disconnect...");
 	m_movable = false;
-    const char* msg = "Disconnect...";
+    char buf[200];
+    sprintf(buf, "%s\n离开了游戏", otherNickName.c_str());
     GameOverLayer* gameOver = (GameOverLayer*)getChildByTag(444);
     if(!gameOver)
     {
-        GameOverLayer* gameOver = GameOverLayer::create(msg);
+        GameOverLayer* gameOver = GameOverLayer::create(buf);
         addChild(gameOver, 1000, 444);
         setStopVisible(false);
         m_labelTurnA->setVisible(false);
@@ -91,10 +92,19 @@ void NetPlayLayer::matchEnded()
     }
     else
     {
-        CCLabelTTF* label = CCLabelTTF::create("disconnect...", "Marker Felt", 30.0f);
+        
+        CCLabelTTF* label = CCLabelTTF::create("连接已断开...", "Marker Felt", 30.0f);
         label->setPosition(ccp(320, 600));
         gameOver->addChild(label);
     }
+}
+
+void NetPlayLayer::matchCancel()
+{
+    isCancel = true;
+    if(m_waitLabel)
+        m_waitLabel->setVisible(false);
+    SceneManager::goMenu();
 }
 
 void NetPlayLayer::matchData(NSData* data, NSString* playerID)
@@ -156,6 +166,7 @@ void NetPlayLayer::matchData(NSData* data, NSString* playerID)
         m_touchChessPos = 20 - messageMove->from;
         m_moveToChessPos = 20 - messageMove->to;
         realMove();
+        /*
         CCLog("Received move");
         if (isPlayer1)
         {
@@ -164,7 +175,7 @@ void NetPlayLayer::matchData(NSData* data, NSString* playerID)
         else
         {
             CCLog("1 move from %d to %d", messageMove->from, messageMove->to);
-        }
+        }*/
     }
     else if (message->messageType == kMessageTypeGameOver)
     {
@@ -208,6 +219,7 @@ void NetPlayLayer::setGameState(GameState state)
             break;
         case kGameStateActive:
         {
+            m_waitLabel->setVisible((false));            
             if(isPlayer1)
             {
                 m_labelTurnA->setVisible(true);
@@ -278,11 +290,13 @@ void NetPlayLayer::tryStartGame()
 void NetPlayLayer::setNickName(NSString* playerID)
 {
     char buf[50];
-    sprintf(buf, "%s Turns", [GKLocalPlayer localPlayer].alias.UTF8String);
+    sprintf(buf, "轮到%s", [GKLocalPlayer localPlayer].alias.UTF8String);
     m_labelTurnA->setString(buf);
+    myNickName = [GKLocalPlayer localPlayer].alias.UTF8String;
     GKPlayer *player = [[GCHelper sharedInstance].playersDict objectForKey:playerID];
-    sprintf(buf, "%s Turns", player.alias.UTF8String);
+    sprintf(buf, "轮到%s", player.alias.UTF8String);
     m_labelTurnB->setString(buf);
+    otherNickName = player.alias.UTF8String;
 }
 
 void NetPlayLayer::restartGame()
@@ -307,16 +321,27 @@ bool NetPlayLayer::init()
 	m_levelA = 0;
 	m_levelB = 0;
     
+	//background
+	CCSprite* bg = CCSprite::create(PIC_MAIN_BACKGROUND);
+	bg->setPosition(ccp(s.width*0.5, s.height*0.5));
+	addChild(bg);
+    
 	//board
 	CCSprite* chessboard = CCSprite::create(PIC_CHESSBOARD1);
 	chessboard->setPosition(ccp(s.width*0.5, s.height*0.5));
 	addChild(chessboard);
 	//chessmen
 	initBoard();
-	//chessCircle
-	m_chessCircle = CCSprite::create(PIC_SELECT_CIRCLE1);
-	m_chessCircle->setVisible(false);
-	addChild(m_chessCircle,2);
+    
+	//select and hide chess...
+	m_hideChess = NULL;
+	m_chess1Select = CCSprite::create(PIC_CHESSMAN1S);
+	m_chess2Select = CCSprite::create(PIC_CHESSMAN2S);
+	m_chess1Select->setVisible(false);
+	m_chess2Select->setVisible(false);
+	addChild(m_chess1Select,2);
+	addChild(m_chess2Select,2);
+    
 	//turns label...
 	m_labelTurnA = CCLabelTTF::create("Your turns", "Marker Felt", 50);
 	m_labelTurnA->setAnchorPoint(ccp(0.5,0.5));
@@ -328,6 +353,10 @@ bool NetPlayLayer::init()
 	m_labelTurnB->setPosition(ccp(s.width*0.5,s.height-100));
 	m_labelTurnB->setVisible(false);
 	addChild(m_labelTurnB);
+    m_waitLabel = CCLabelTTF::create("等待对手…", "Marker Felt", 50);
+	m_waitLabel->setAnchorPoint(ccp(0.5,0.5));
+	m_waitLabel->setPosition(ccp(s.width*0.5,s.height-100));
+	addChild(m_waitLabel);
     
 	//stop button...
 	CCMenuItemImage* stopItem = CCMenuItemImage::create(
@@ -344,6 +373,7 @@ bool NetPlayLayer::init()
 	//m_chess.nextTurn();
 	//nextTurn();
     
+    isCancel = false;
     NetPlayMatch* m_match = [[NetPlayMatch alloc] initWithLayer:this];
     AppController* delegate= (AppController *) [UIApplication sharedApplication].delegate;
     [[GCHelper sharedInstance] findMatchWithMinPlayers:2 maxPlayers:2 viewController:delegate.viewController delegate:m_match];
@@ -356,11 +386,6 @@ bool NetPlayLayer::init()
 
 NetPlayLayer::~NetPlayLayer()
 {
-    matchEnded();
-    [m_match release];
-    m_match = nil;
-    [otherPlayerID release];
-    otherPlayerID = nil;
 }
 
 void NetPlayLayer::back(cocos2d::CCObject *pSender)
@@ -411,15 +436,20 @@ void NetPlayLayer::realMove()
 	CCSprite* chessman = (CCSprite*)getChildByTag(100+m_touchChessPos);
 	chessman->setTag(NET_CHESS_BASE+m_moveToChessPos);
 	CCPoint pos = getChessPoint(m_moveToChessPos);
-	m_chessCircle->runAction(CCMoveTo::create(0.5f, pos));
-	chessman->runAction(CCSequence::create(CCMoveTo::create(0.5f, pos),
+	CCSprite* chessSelect = m_chess.isTurnA()? m_chess1Select : m_chess2Select;
+	chessSelect->runAction(CCMoveTo::create(0.2f, pos));
+	chessman->runAction(CCSequence::create(CCMoveTo::create(0.2f, pos),
                                            CCCallFunc::create(this, callfunc_selector(NetPlayLayer::callbackMoveDone)),
                                            NULL));
 }
 
 void NetPlayLayer::callbackMoveDone()
 {
-	m_chessCircle->setVisible(false);
+	CCSprite* chessSelect = m_chess.isTurnA()? m_chess1Select : m_chess2Select;
+	chessSelect->setVisible(false);
+	if(m_hideChess)
+		m_hideChess->setVisible(true);
+	MySound::playSound(SOUND_MOVEDONE_CHESS);
 	check();
 }
 
@@ -466,7 +496,23 @@ void NetPlayLayer::checkFinish()
 	Game_Finish_State state = GAME_FINISH_A_WIN;
 	if(!m_chess.isTurnA())
 		state = GAME_FINISH_B_WIN;
-    const char* msg = m_chess.isTurnA() ? "You win!" : "You lose~";
+	MySound::stopMusic();
+    loseScore = CCGetInt("loseScore", 0);
+    winScore = CCGetInt("winScore", 0);
+	if(!m_chess.isTurnA())
+    {
+        loseScore++;
+        CCSetInt("loseScore", loseScore);
+		MySound::playSound(SOUND_LOSE);
+    }
+	else
+    {
+        winScore++;
+        CCSetInt("winScore", winScore);
+		MySound::playSound(SOUND_WIN);
+    }
+    commitScore();
+    const char* msg = m_chess.isTurnA() ? "你赢了!" : "你输了~";
 	GameOverLayer* gameOver = GameOverLayer::create(msg);
 	addChild(gameOver, 1000, 444);
 	setStopVisible(false);
@@ -474,8 +520,28 @@ void NetPlayLayer::checkFinish()
     m_labelTurnB->setVisible(false);
 }
 
+void NetPlayLayer::commitScore()
+{
+    CCLog("winScore:%d",winScore);
+    [[GCHelper sharedInstance] commitScore:@"connectWin" value:winScore];
+    if(winScore >= 50)
+    {
+        [[GCHelper sharedInstance] commitAchievement:@"winConnect50" value:50];
+    }
+    else if(winScore >= 10)
+    {
+        [[GCHelper sharedInstance] commitAchievement:@"winConnect10" value:10];
+    }
+    else if(winScore >= 1)
+    {
+        [[GCHelper sharedInstance] commitAchievement:@"winConnect1" value:1];
+    }
+}
+
 void NetPlayLayer::nextTurn()
 {
+    m_touchChessPos = -1;
+    m_moveToChessPos = -1;
 	m_chess.nextTurn();
 	m_labelTurnA->setVisible(m_chess.isTurnA());
 	m_labelTurnB->setVisible(!m_chess.isTurnA());
@@ -484,30 +550,54 @@ void NetPlayLayer::nextTurn()
 
 void NetPlayLayer::selectChessman(int chessPos)
 {
+	CCSprite* chessSelect = m_chess.isTurnA()? m_chess1Select : m_chess2Select;
 	ChessPointState moveToState = m_chess.getChessPosState(chessPos);
 	if( (m_chess.isTurnA() && moveToState == CHESS_POINT_A) ||
        (!m_chess.isTurnA() && moveToState == CHESS_POINT_B) )
 	{
+		if(m_touchChessPos!=-1)
+		{
+			CCSprite* chessman = (CCSprite*)getChildByTag(100+m_touchChessPos);
+			chessman->setVisible(true);
+		}
+		m_hideChess = (CCSprite*)getChildByTag(100+chessPos);
+		m_hideChess->setVisible(false);
+        
 		//CCLog("select chess: %d",chessPos);
 		m_touchChessPos = chessPos;
-		m_chessCircle->setPosition(getChessPoint(m_touchChessPos));
-		m_chessCircle->setVisible(true);
+		chessSelect->setPosition(getChessPoint(m_touchChessPos));
+		chessSelect->setVisible(true);
 		m_selected = true;
+		MySound::playSound(SOUND_SELECT_CHESS);
 	}
 	else
 	{
+		if(m_touchChessPos!=-1)
+		{
+			m_hideChess = (CCSprite*)getChildByTag(100+m_touchChessPos);
+			m_hideChess->setVisible(true);
+		}
 		//CCLog("cant select");
 		m_touchChessPos = -1;
-		m_chessCircle->setVisible(false);
+		chessSelect->setVisible(false);
+        
 		m_selected = false;
 	}
 }
 
 void NetPlayLayer::unselectChessman()
 {
+	CCSprite* chessSelect = m_chess.isTurnA()? m_chess1Select : m_chess2Select;
 	//CCLog("unselect chess: %d",m_touchChessPos);
+	if(m_touchChessPos != -1)
+	{
+		if(m_hideChess)
+			m_hideChess->setVisible(true);
+		MySound::playSound(SOUND_SELECT_CHESS);
+	}
 	m_touchChessPos = -1;
-	m_chessCircle->setVisible(false);
+	chessSelect->setVisible(false);
+    
 	m_selected = false;
 }
 
@@ -652,6 +742,12 @@ void NetPlayLayer::onEnter()
 
 void NetPlayLayer::onExit()
 {
+    if(!isCancel)
+        matchEnded();
+    [m_match release];
+    m_match = nil;
+    [otherPlayerID release];
+    otherPlayerID = nil;
 	//MySound::stopAll();
 	CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(this);  
 	CCLayer::onExit();
@@ -659,7 +755,7 @@ void NetPlayLayer::onExit()
 
 void NetPlayLayer::menuStopCallback(CCObject* pSender)
 {
-	MySound::playSound(SOUND_SELECT_PROP);
+	MySound::playSound(SOUND_SELECT_CHESS);
 	StopLayer* stop = StopLayer::create();
 	stop->initWithColor(ccc4(0,0,0,125));
 	this->addChild(stop, 100);
@@ -671,3 +767,4 @@ void NetPlayLayer::setStopVisible(bool b)
 {
 	m_stopMenu->setVisible(b);
 }
+

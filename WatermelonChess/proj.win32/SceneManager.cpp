@@ -91,14 +91,6 @@ void SceneManager::goPlay2()
 	//看看go函数的定义...这个layer直接被他扔到Scene里了  
 }  
 
-void SceneManager::goPlayNet()
-{
-}
-
-void SceneManager::goRecording(int transType)  
-{
-}
-
 void SceneManager::goStop()
 {
 	CCLayerColor* layer = StopLayer::create();

@@ -157,6 +157,33 @@ static UIViewController* currentModalViewController = nil;
     }    
 }
 
+- (void)commitAchievement:(NSString*)acid value:(int)value
+{
+    if (!gameCenterAvailable) return;
+    GKAchievement* ac = [[GKAchievement alloc] initWithIdentifier:acid];
+    ac.percentComplete = value;
+    [ac reportAchievementWithCompletionHandler:^(NSError* error){
+       if(error)
+       {
+           
+       }
+    }];
+}
+
+- (void)commitScore:(NSString*)scoreId value:(int)value
+{
+    if (!gameCenterAvailable) return;
+    GKScore* score = [[GKScore alloc] initWithCategory:scoreId];
+    score.value = value;
+    [score reportScoreWithCompletionHandler:^(NSError* error){
+        if(error)
+        {
+            
+        }
+    }];
+    
+}
+
 - (void)findMatchWithMinPlayers:(int)minPlayers maxPlayers:(int)maxPlayers
                  viewController:(UIViewController *)viewController
                        delegate:(id<GCHelperDelegate>)theDelegate {

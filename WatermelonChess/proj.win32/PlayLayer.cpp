@@ -4,11 +4,58 @@
 #include "MySound.h"
 #include "Basic.h"
 #include "GameOverLayer.h"
-#include <pthread.h>
 //#pragma comment(lib, "pthreadVC2.lib")  //必须加上这句
 
 #include "cocos-ext.h"
 USING_NS_CC_EXT;
+
+
+int code_convert(const char *from_charset, const char *to_charset, const char *inbuf, size_t inlen, char *outbuf, size_t outlen)
+{
+    iconv_t cd;
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+    char *temp = const_cast<char*>(inbuf);
+	char **pin = &temp;
+#else
+    const char *temp = inbuf;
+    const char **pin = &temp;
+#endif
+    char **pout = &outbuf;
+    memset(outbuf,0,outlen);
+    cd = iconv_open(to_charset,from_charset);
+    if(cd==0) return -1;
+    if(iconv(cd,pin,&inlen,pout,&outlen)==-1) return -1;
+    iconv_close(cd);
+    return 0;
+}
+     
+//UTF8转为GB2312
+std::string u2a(const char *inbuf)
+{
+    size_t inlen = strlen(inbuf);
+    char * outbuf = new char[inlen * 2 + 2];
+    std::string strRet;
+    if(code_convert("utf-8", "gb2312", inbuf, inlen, outbuf, inlen * 2 + 2) == 0)
+    {
+        strRet = outbuf;
+    }
+    delete [] outbuf;
+    return strRet;
+}
+     
+//GB2312转为UTF8
+std::string a2u(const char *inbuf)
+{
+    size_t inlen = strlen(inbuf);
+    char * outbuf = new char[inlen * 2 + 2];
+    std::string strRet;
+    if(code_convert("gb2312", "utf-8", inbuf, inlen, outbuf, inlen * 2 + 2) == 0)
+    {
+        strRet = outbuf;
+    }
+    delete [] outbuf;
+    return strRet;
+}
 
 bool PlayLayer::init()
 {	
@@ -48,12 +95,17 @@ bool PlayLayer::init()
 	addChild(m_chess2Select,2);
 
 	//turns label...
-	m_labelTurnA = CCLabelTTF::create("Blue turns", "Marker Felt", 50);
+	//刷新分数显示
+	char* label = "轮到你了";
+	m_labelTurnA = CCLabelTTF::create(a2u(label).c_str(), "Marker Felt", 50);
+	//m_labelTurnA = CCLabelTTF::create("轮到你了", "Marker Felt", 50);
 	m_labelTurnA->setAnchorPoint(ccp(0.5,0.5));
 	m_labelTurnA->setPosition(ccp(s.width*0.5,100));
 	m_labelTurnA->setVisible(false);
 	addChild(m_labelTurnA);
-	m_labelTurnB = CCLabelTTF::create("Pink turns", "Marker Felt", 50);
+	m_labelTurnB = CCLabelTTF::create(a2u(label).c_str(), "Marker Felt", 50);
+	m_labelTurnB->setRotation(180.0f);
+	//m_labelTurnB = CCLabelTTF::create("Pink turns", "Marker Felt", 50);
 	m_labelTurnB->setAnchorPoint(ccp(0.5,0.5));
 	m_labelTurnB->setPosition(ccp(s.width*0.5,s.height-100));
 	m_labelTurnB->setVisible(false);
@@ -83,9 +135,18 @@ void PlayLayer::setLevel(int a, int b)
 	m_levelA = a;
 	m_levelB = b;
 	if(a>0)
-		m_labelTurnA->setString("Blue Thinking...");
+	{
+		m_labelTurnA->setString(a2u("AI思考中…").c_str());
+	}
 	if(b>0)
-		m_labelTurnB->setString("Pink Thinking...");
+	{
+		m_labelTurnB->setRotation(0.0f);
+		m_labelTurnB->setString(a2u("AI思考中…").c_str());
+	}
+	else
+	{
+		m_labelTurnB->setRotation(180.0f);
+	}
 }
 
 void PlayLayer::back(cocos2d::CCObject *pSender)  
@@ -203,8 +264,28 @@ void PlayLayer::checkFinish()
 		MySound::playSound(SOUND_LOSE);
 	else
 		MySound::playSound(SOUND_WIN);
-	GameOverLayer* gameOver = GameOverLayer::create(state);
+	if(m_chess.isTurnA() && m_levelB > 0)
+	{
+		int winAIcount = CCGetInt("winAIcount", 0);
+		winAIcount++;
+		CCSetInt("winAIcount", winAIcount);
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+		commitWinAIAchivement(winAIcount);
+#endif
+	}
+	GameOverLayer* gameOver = NULL;
+	if(m_levelB == 0)
+		gameOver = GameOverLayer::create(state);
+	else
+	{
+		char* msg = m_chess.isTurnA() ? "你赢了！" : "你输了～";
+		gameOver = GameOverLayer::create(a2u(msg).c_str());
+	}
 	addChild(gameOver, 1000);
+	if(m_chess.isTurnA())
+		m_labelTurnA->setVisible(false);
+	else
+		m_labelTurnB->setVisible(false);
 	setStopVisible(false);
 }
 
@@ -214,6 +295,7 @@ void* ThreadFunction(void* arg)
     pthread_mutex_lock(&mutex);
 	srand((unsigned)time(0));
     PlayLayer* playLayer = (PlayLayer*)arg;
+	playLayer->retain();
 	playLayer->thinkAndMove();
     pthread_mutex_unlock(&mutex);
     return NULL;
@@ -234,8 +316,9 @@ void PlayLayer::thinkAndMove()
 		//CCLog("auto A...");
 		if(m_chess.getAImove(m_levelA, m_touchChessPos, m_moveToChessPos))
 		{
-			selectChessman(m_touchChessPos);
+			//selectChessman(m_touchChessPos);
 			moveChessman();
+			release();
 		}
 	}
 	else if(!m_chess.isTurnA() && m_levelB > 0)
@@ -244,8 +327,9 @@ void PlayLayer::thinkAndMove()
 		if(m_chess.getAImove(m_levelB, m_touchChessPos, m_moveToChessPos))
 		{			
 			CCLog("from %d, to %d", m_touchChessPos, m_moveToChessPos);
-			selectChessman(m_touchChessPos);
+			//selectChessman(m_touchChessPos);
 			moveChessman();
+			release();
 		}
 	}
 }
@@ -318,7 +402,6 @@ void PlayLayer::unselectChessman()
 
 void PlayLayer::moveChessman()
 {
-	CCSprite* chessSelect = m_chess.isTurnA()? m_chess1Select : m_chess2Select;
 	ChessPointState moveToState = m_chess.getChessPosState(m_moveToChessPos);
 	if(moveToState == CHESS_POINT_NONE)
 	{

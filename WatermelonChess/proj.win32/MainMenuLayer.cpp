@@ -102,13 +102,17 @@ void MainMenuLayer::menuCallbackPlayNet(CCObject* sender)
 {
 	MySound::playSound(SOUND_MENU);
 	
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
 	SceneManager::goPlayNet();
+#endif
 }
 
 void MainMenuLayer::menuCallbackRecording(CCObject* sender) 
 {
 	MySound::playSound(SOUND_MENU);
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
 	SceneManager::goRecording();
+#endif
 }
 
 void MainMenuLayer::music(CCObject *pSender)

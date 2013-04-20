@@ -4,6 +4,7 @@
 USING_NS_CC;
 
 #include "Chess.h" 
+#include <pthread.h>
 
 #define CHESS_BASE 100
 
@@ -69,6 +70,10 @@ private:
 	Chess m_chess;
 	CCMenu* m_stopMenu;
 
+private:
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+	void commitWinAIAchivement(int winCount);
+#endif
 };
 
 #endif
