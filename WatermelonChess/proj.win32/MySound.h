@@ -9,7 +9,6 @@ using namespace CocosDenshion;
 enum Sound_Type
 {
 	SOUND_MENU,
-	SOUND_START,
 	SOUND_SELECT_CHESS,
 	SOUND_MOVEDONE_CHESS,
 	SOUND_WIN,
@@ -20,7 +19,6 @@ enum Sound_Type
 
 const char* const sound_effects[SOUND_COUNT] = {
 	"sound_menu.wav",
-	"sound_start.wav",
 	"sound_select.wav",
 	"sound_movedone.wav",
 	"sound_win.mp3",

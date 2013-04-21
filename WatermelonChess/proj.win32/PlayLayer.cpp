@@ -117,7 +117,7 @@ bool PlayLayer::init()
             PIC_STOPBUTTON_SELECTED,
             this,
             menu_selector(PlayLayer::menuStopCallback));
-	stopItem->setPosition(ccp(s.width - 40, s.height - 40));
+	stopItem->setPosition(ccp(s.width - 54, s.height - 52));
 	// Create a menu with the "close" menu item, it's an auto release object.
 	m_stopMenu = CCMenu::create(stopItem, NULL);
 	m_stopMenu->setPosition(CCPointZero);

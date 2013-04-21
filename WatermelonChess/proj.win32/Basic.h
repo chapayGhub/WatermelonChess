@@ -28,7 +28,6 @@ extern std::string a2u(const char *inbuf);
 #define PIC_CHESSMAN2 "chessman2.png"
 #define PIC_CHESSMAN1S "chessman1select.png"
 #define PIC_CHESSMAN2S "chessman2select.png"
-#define PIC_SELECT_CIRCLE1 "selectCircle1.png"
 
 #define PIC_ROUND "round.png"
 #define PIC_BUTTON_BACK "backButton.png"
@@ -48,10 +47,14 @@ extern std::string a2u(const char *inbuf);
 #define PIC_BTN_COMPUTER2 "btn_vsComputer2.png"
 #define PIC_BTN_ONLINE1 "btn_online1.png"
 #define PIC_BTN_ONLINE2 "btn_online2.png"
-#define PIC_BTN_LEADBOARD1 "btn_leadboard1.png"
-#define PIC_BTN_LEADBOARD2 "btn_leadboard2.png"
+#define PIC_BTN_HELP1 "btn_help1.png"
+#define PIC_BTN_HELP2 "btn_help2.png"
 
-const int s_pics_num = 27;
+#define PIC_BTN_LEADBOARD "btn_leadboard.png"
+#define PIC_BTN_ACHIEVEMENT "btn_achievement.png"
+#define PIC_BTN_WEIBO "btn_weibo.png"
+
+const int s_pics_num = 29;
 const std::string s_pics[s_pics_num] = {
 	PIC_MAIN_BACKGROUND,
 	PIC_MAIN_TITLE,
@@ -60,7 +63,6 @@ const std::string s_pics[s_pics_num] = {
 	PIC_CHESSMAN2,
 	PIC_CHESSMAN1S,
 	PIC_CHESSMAN2S,
-	PIC_SELECT_CIRCLE1,
 	PIC_ROUND,
 	PIC_BUTTON_BACK,
 	PIC_BUTTON_BACK_SELECTED,
@@ -78,8 +80,11 @@ const std::string s_pics[s_pics_num] = {
 	PIC_BTN_COMPUTER2,
 	PIC_BTN_ONLINE1,
 	PIC_BTN_ONLINE2,
-	PIC_BTN_LEADBOARD1,
-	PIC_BTN_LEADBOARD2
+	PIC_BTN_HELP1,
+	PIC_BTN_HELP2,
+	PIC_BTN_LEADBOARD,
+	PIC_BTN_ACHIEVEMENT,
+	PIC_BTN_WEIBO
 };
 
 enum GAME_STATE

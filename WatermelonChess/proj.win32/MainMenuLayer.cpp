@@ -45,14 +45,14 @@ bool MainMenuLayer::init()
 	}
 	CCMenuItemToggle *music_toggle = CCMenuItemToggle::createWithTarget(this, menu_selector(MainMenuLayer::music), music1, music2, NULL);
 	CCMenu *musicMenu = CCMenu::create(music_toggle,NULL);
-	musicMenu->setPosition(ccp(s.width-40,s.height-40));
+	musicMenu->setPosition(ccp(s.width-54,s.height-52));
 	this->addChild(musicMenu);
 
 	// 创建一个CCMenuItemFont    
 	CCMenuItemImage* item1 = CCMenuItemImage::create(PIC_BTN_2PLAYER1, PIC_BTN_2PLAYER2, this, menu_selector(MainMenuLayer::menuCallbackPlay) ); 
 	CCMenuItemImage* item2 = CCMenuItemImage::create(PIC_BTN_COMPUTER1, PIC_BTN_COMPUTER2, this, menu_selector(MainMenuLayer::menuCallbackPlay2) ); 
 	CCMenuItemImage* item3 = CCMenuItemImage::create(PIC_BTN_ONLINE1, PIC_BTN_ONLINE2, this, menu_selector(MainMenuLayer::menuCallbackPlayNet) ); 
-	CCMenuItemImage* item4 = CCMenuItemImage::create(PIC_BTN_LEADBOARD1, PIC_BTN_LEADBOARD2, this, menu_selector(MainMenuLayer::menuCallbackHelp) ); 
+	CCMenuItemImage* item4 = CCMenuItemImage::create(PIC_BTN_HELP1, PIC_BTN_HELP2, this, menu_selector(MainMenuLayer::menuCallbackHelp) ); 
 	//CCMenuItemImage* item5 = CCMenuItemImage::create(PIC_BTN_LEADBOARD1, PIC_BTN_LEADBOARD2, this, menu_selector(MainMenuLayer::menuCallbackRecording) ); 
 		
     /*CCMenuItemFont *item1 = CCMenuItemFont::create("2 Players", this, menu_selector(MainMenuLayer::menuCallbackPlay) );  
@@ -74,9 +74,9 @@ bool MainMenuLayer::init()
 	addChild(menu);	
 	
 	//leaderboard, achievement, weibo...
-	item1 = CCMenuItemImage::create(PIC_ROUND, PIC_ROUND, this, menu_selector(MainMenuLayer::menuCallbackLeaderboard) ); 
-	item2 = CCMenuItemImage::create(PIC_ROUND, PIC_ROUND, this, menu_selector(MainMenuLayer::menuCallbackAchievement) ); 
-	item3 = CCMenuItemImage::create(PIC_ROUND, PIC_ROUND, this, menu_selector(MainMenuLayer::menuCallbackWeibo) ); 
+	item1 = CCMenuItemImage::create(PIC_BTN_LEADBOARD, PIC_BTN_LEADBOARD, this, menu_selector(MainMenuLayer::menuCallbackLeaderboard) ); 
+	item2 = CCMenuItemImage::create(PIC_BTN_ACHIEVEMENT, PIC_BTN_ACHIEVEMENT, this, menu_selector(MainMenuLayer::menuCallbackAchievement) ); 
+	item3 = CCMenuItemImage::create(PIC_BTN_WEIBO, PIC_BTN_WEIBO, this, menu_selector(MainMenuLayer::menuCallbackWeibo) ); 
 	/*
 	menu = CCMenu::create(item1,NULL);
 	menu->setAnchorPoint(ccp(0.5,0.5));
@@ -93,8 +93,18 @@ bool MainMenuLayer::init()
 	
 	menu = CCMenu::create(item1, item2, item3, NULL);
     menu->alignItemsHorizontally();//水平排列menu
-    menu->setPosition(ccp(s.width/2, 120));
+    menu->setPosition(ccp(480, 80));
 	addChild(menu);
+	
+	CCLabelTTF* text = CCLabelTTF::create(a2u("排行").c_str(), "Arial", 20.0f);
+	text->setPosition(ccp(395,25));
+	addChild(text);
+	text = CCLabelTTF::create(a2u("成就").c_str(), "Arial", 20.0f);
+	text->setPosition(ccp(480,25));
+	addChild(text);
+	text = CCLabelTTF::create(a2u("分享").c_str(), "Arial", 20.0f);
+	text->setPosition(ccp(565,25));
+	addChild(text);
 
 	return true;
 }

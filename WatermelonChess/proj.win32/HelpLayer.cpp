@@ -34,18 +34,18 @@ bool HelpLayer::init()
 	text->setPosition(ccp(s.width*0.5, s.height*0.5));
 	addChild(text);	
 	
-	text = CCLabelTTF::create(a2u("天普教育").c_str(), "Arial", 30.0f);
-	text->setPosition(ccp(500, 250));
+	text = CCLabelTTF::create(a2u("北京天普教育").c_str(), "Arial", 30.0f);
+	text->setPosition(ccp(450, 250));
 	addChild(text);	
 
 	//quit menu
 	CCMenuItemImage* quit = CCMenuItemImage::create(
-            PIC_QUIT,
-            PIC_QUIT_SELECTED,
+            PIC_BUTTON_BACK,
+            PIC_BUTTON_BACK_SELECTED,
             this,
             menu_selector(HelpLayer::quit));
 	CCMenu* menu = CCMenu::create(quit, NULL);
-	menu->setPosition(ccp(s.width*0.5, 150));
+	menu->setPosition(ccp(s.width*0.5, 120));
 	this->addChild(menu);
 
 	return true;

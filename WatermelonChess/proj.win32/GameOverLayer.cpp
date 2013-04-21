@@ -33,7 +33,7 @@ bool GameOverLayer::initWithState(Game_Finish_State state)
 	if(state == GAME_FINISH_A_WIN)
 		sprintf(buf, "蓝方赢了!");
 	else if(state == GAME_FINISH_B_WIN)
-		sprintf(buf, "红方赢了!");
+		sprintf(buf, "橙方赢了!");
 	else
 		sprintf(buf, "打了个平手~");
 	CCLabelTTF* label = CCLabelTTF::create(a2u(buf).c_str(), "Marker Felt", 90.0/*, CCSizeMake(200, 50), kCCTextAlignmentLeft*/);
