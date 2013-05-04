@@ -38,8 +38,8 @@
     <OutDir>$(SolutionDir)$(Configuration).win32\</OutDir>
     <IntDir>$(Configuration).win32\</IntDir>
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\cocos2d-x\cocos2d-2.1beta3-x-2.1.0\cocos2d-2.1beta3-x-2.1.0\extensions;$(IncludePath)</IncludePath>
-    <ReferencePath>D:\work\pthreads-w32-2-8-0-release\Pre-built.2\include;D:\cocos2d-x\cocos2d-2.1beta3-x-2.1.0\cocos2d-2.1beta3-x-2.1.0\extensions;$(ReferencePath)</ReferencePath>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <ReferencePath>D:\work\pthreads-w32-2-8-0-release\Pre-built.2\include;$(ReferencePath)</ReferencePath>
     <LibraryPath>D:\work\pthreads-w32-2-8-0-release\Pre-built.2\lib;D:\work\VS2010workspace\WatermelonChess\WatermelonChess\proj.win32\Debug.win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -49,7 +49,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>D:\work\pthreads-w32-2-8-0-release\Pre-built.2\include;.;..\Classes;$(SolutionDir)cocos2dx;$(SolutionDir)cocos2dx\include;$(SolutionDir)cocos2dx\kazmath\include;$(SolutionDir)cocos2dx\platform\win32;$(SolutionDir)cocos2dx\platform\third_party\win32;$(SolutionDir)cocos2dx\platform\third_party\win32\OGLES;$(SolutionDir)CocosDenshion\include;D:\cocos2d-x\cocos2d-2.1beta3-x-2.1.0\cocos2d-2.1beta3-x-2.1.0\cocos2dx\platform\third_party\win32\iconv;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\work\pthreads-w32-2-8-0-release\Pre-built.2\include;.;..\Classes;$(SolutionDir)cocos2dx;$(SolutionDir)cocos2dx\include;$(SolutionDir)cocos2dx\kazmath\include;$(SolutionDir)cocos2dx\platform\win32;$(SolutionDir)cocos2dx\platform\third_party\win32;$(SolutionDir)cocos2dx\platform\third_party\win32\OGLES;$(SolutionDir)CocosDenshion\include;$(SolutionDir)cocos2dx\platform\third_party\win32\iconv;$(SolutionDir)extensions;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
@@ -65,7 +65,7 @@
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\work\pthreads-w32-2-8-0-release\Pre-built.2\lib;D:\cocos2d-x\cocos2d-2.1beta3-x-2.1.0\cocos2d-2.1beta3-x-2.1.0\extensions;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\work\pthreads-w32-2-8-0-release\Pre-built.2\lib;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libcocos2d.lib;opengl32.lib;glew32.lib;libCocosDenshion.lib;libExtensions.lib;pthreadVC2.lib;libiconv.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
